@@ -4,10 +4,10 @@ Um aplicativo de acompanhamento de leitura, permitindo cadastro de livros e rast
 
 ## 🎯 Funcionalidades
 
-- **Cadastro de Livros**: Adicionar e gerenciar seus livros com informações como título, autor, editora e progresso
-- **Sessões de Leitura**: Registrar cada sessão de leitura com data, duração e páginas lidas
-- **Acompanhamento de Progresso**: Visualizar estatísticas e progresso geral de leitura
-- **Sincronização em Tempo Real**: Dados sincronizados com Supabase
+- Cadastro de livros com informações como título, autor, editora e progresso
+- Registro de sessões de leitura com data, duração e páginas lidas
+- Acompanhamento de progresso geral de leitura
+- Sincronização em tempo real com Supabase
 
 ## 🛠️ Tecnologias
 
@@ -19,35 +19,50 @@ Um aplicativo de acompanhamento de leitura, permitindo cadastro de livros e rast
 ## 📦 Instalação
 
 ### Pré-requisitos
+
 - Node.js 16+
 - npm ou yarn
 
 ### Setup
 
 1. Clone o repositório:
-   git clone [seu-repositorio]
-   cd entrelinhas
+
+~~~bash
+git clone https://github.com/seu-usuario/entrelinhas.git
+cd entrelinhas
+~~~
 
 2. Instale as dependências:
-   npm install
+
+~~~bash
+npm install
+~~~
 
 3. Configure as variáveis de ambiente:
-   Crie um arquivo `.env.local` na raiz do projeto com:
-   VITE_SUPABASE_URL=url_do_supabase
-   VITE_SUPABASE_ANON_KEY=anon_key_do_supabase
+
+Crie o arquivo .env.local na raiz do projeto com:
+
+~~~env
+VITE_SUPABASE_URL=url_do_supabase
+VITE_SUPABASE_ANON_KEY=anon_key_do_supabase
+~~~
 
 4. Inicie o servidor de desenvolvimento:
-   npm run dev
+
+~~~bash
+npm run dev
+~~~
 
 ## 🚀 Scripts
 
-- npm run dev - Inicia o servidor de desenvolvimento
-- npm run build - Compila para produção
-- npm run preview - Visualiza a build de produção
-- npm run lint - Executa o ESLint
+- npm run dev: inicia o servidor de desenvolvimento
+- npm run build: compila para produção
+- npm run preview: visualiza a build de produção
+- npm run lint: executa o ESLint
 
 ## 📋 Estrutura do Projeto
 
+~~~text
 src/
 ├── components/     # Componentes React reutilizáveis (Botões, Formulários, etc.)
 ├── pages/          # Páginas da aplicação (Home, Cadastro, etc.)
@@ -56,14 +71,15 @@ src/
 ├── assets/         # Recursos estáticos (imagens, estilos, etc.)
 ├── App.tsx         # Componente principal (roteamento, layout, etc.)
 └── main.tsx        # Ponto de entrada (renderização do React)
+~~~
 
 ## 🗄️ Banco de Dados
 
 O projeto utiliza Supabase com as seguintes tabelas principais:
 
-- livro: Armazena informações dos livros cadastrados
-- leitura: Registra cada sessão de leitura
-- usuario: Gerencia os usuários do sistema
+- *livro*: Armazena informações dos livros cadastrados
+- *leitura*: Registra cada sessão de leitura
+- *usuario*: Gerencia os usuários do sistema
 
 ## 🤝 Colaboradores
 
