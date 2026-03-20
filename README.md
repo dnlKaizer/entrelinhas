@@ -64,11 +64,12 @@ npm run dev
 
 ~~~text
 src/
+├── assets/         # Recursos estáticos (imagens, estilos, etc.)
 ├── components/     # Componentes React reutilizáveis (Botões, Formulários, etc.)
 ├── pages/          # Páginas da aplicação (Home, Cadastro, etc.)
+├── providers/      # Provedores de contexto (temas)
 ├── services/       # Integração com Supabase (CRUD, autenticação, etc.)
 ├── types/          # Tipos TypeScript (classes, interfaces, etc.)
-├── assets/         # Recursos estáticos (imagens, estilos, etc.)
 ├── App.tsx         # Componente principal (roteamento, layout, etc.)
 └── main.tsx        # Ponto de entrada (renderização do React)
 ~~~
