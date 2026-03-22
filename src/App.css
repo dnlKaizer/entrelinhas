@@ -182,3 +182,14 @@
     border-right-color: var(--border);
   }
 }
+
+.nav-button {
+  cursor: pointer;
+  transition: opacity 0.2s; 
+  transition: scale 0.2s;
+}
+
+.nav-button:hover {
+  opacity: 0.9; 
+  transform: scale(1.05);
+}

@@ -34,37 +34,40 @@ function AppFooter() {
         >
             <Flex justify="space-around" align="center" gap="10px">
                 <div
+                    className='nav-button'
                     onClick={() => navigate('/')}
                     style={{ textAlign: 'center' }}
                 >
                     <HomeOutlined
                         style={{
                             fontSize: '25px',
-                            color: isActive('/') ? '#001010' : '#5c5c5c'
+                            color: isActive('/') ? '#001010' : '#5c5c5c',
+                            cursor: 'pointer'
                         }}
                     />
-                    {isActive('/') && (
+                    {/* {isActive('/') && (
                         <div
                             style={{ width: '5px', height: '5px', backgroundColor: '#003775', borderRadius: '50%', margin: '0 auto', marginTop: '5px' }}
                         />
-                    )}
+                    )} */}
                 </div>
 
                 <div
+                    className='nav-button'
                     onClick={() => navigate('/dashboard')}
                     style={{ textAlign: 'center' }}
                 >
                     <DesktopOutlined
                         style={{
                             fontSize: '25px',
-                            color: isActive('/dashboard') ? '#001010' : '#5c5c5c'
+                            color: isActive('/dashboard') ? '#001010' : '#5c5c5c',
                         }}
                     />
-                    {isActive('/dashboard') && (
+                    {/* {isActive('/dashboard') && (
                         <div
                             style={{ width: '5px', height: '5px', backgroundColor: '#003775', borderRadius: '50%', margin: '0 auto', marginTop: '5px' }}
                         />
-                    )}
+                    )} */}
                 </div>
             </Flex>
             <Text
