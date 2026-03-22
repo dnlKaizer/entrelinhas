@@ -5,10 +5,10 @@ function AppHeader() {
     return (
         <Header
             style={{
-                display: 'flex',
                 alignItems: 'center',
                 backgroundColor: '#ffffff',
                 borderBottom: '1px solid #e2e2e2',
+                display: 'flex',
                 height: '70px',
                 padding: '0 20px'
             }}
@@ -16,11 +16,12 @@ function AppHeader() {
             <Title
                 level={4}
                 style={{ 
+                    color: '#001010',
                     margin: 0,
                     fontFamily: 'Lobster, cursive',
-                    color: '#001010',
                     fontSize: '30px',
                     fontWeight: 'normal',
+                    userSelect: 'none'
                 }}
                     >
                 EntreLinhas

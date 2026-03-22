@@ -59,8 +59,8 @@ function AppFooter() {
                 >
                     <DesktopOutlined
                         style={{
-                            fontSize: '25px',
                             color: isActive('/dashboard') ? '#001010' : '#5c5c5c',
+                            fontSize: '25px'
                         }}
                     />
                     {/* {isActive('/dashboard') && (
@@ -73,9 +73,10 @@ function AppFooter() {
             <Text
                 type="secondary"
                 style={{
+                    display: 'block',
                     fontFamily: 'Lobster, cursive',
                     fontSize: '15px',
-                    display: 'block',
+                    userSelect: 'none',
                     marginTop: '5px'
                 }}>
                 EntreLinhas
