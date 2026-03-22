@@ -48,12 +48,11 @@ const BookCategory: React.FC<BookCategoryProps> = ({ category, backgroundColor, 
             </Title>
             {isEmpty ? (
                 <Flex
+                    className="empty-box"
                     align="center"
                     gap="large"
                     onClick={() => navigate('/add-book')}
                     style={{
-                        backgroundColor: '#ffffffB0',
-                        border: '2.5px dotted #00000040',
                         borderRadius: '10px',
                         cursor: 'pointer',
                         flexDirection: 'column',
@@ -64,7 +63,7 @@ const BookCategory: React.FC<BookCategoryProps> = ({ category, backgroundColor, 
                         style={{
                             alignContent: 'center',
                             backgroundColor: '#ffffff',
-                            border: "2.5px solid #000000a0",
+                            border: "2.5px solid #00000040",
                             borderRadius: '50%',
                             color: '#000000',
                             fontSize: '25px',

@@ -192,6 +192,11 @@
   transition: 0.75s;
 }
 
+.empty-box {
+  background-color: #ffffff90;
+  transition: 1s;
+}
+
 .image-cover {
   transition: 1s;
 }
@@ -205,6 +210,10 @@
   background-color: #ffffff00;
   transform: scale(1.05);
   box-shadow: -5px 5px 5px #00000040;
+}
+
+.empty-box:hover {
+  background-color: #ffffff;
 }
 
 .nav-button:hover {
