@@ -1,8 +1,10 @@
 import { Flex, Typography } from "antd";
 
-import { PlusOutlined, BookOutlined } from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
 
 import { useNavigate } from "react-router-dom";
+
+import BookCard from "./BookCard";
 
 const { Text, Title } = Typography;
 
@@ -21,76 +23,78 @@ const BookCategory: React.FC<BookCategoryProps> = ({ category, backgroundColor, 
     return (
         <div
             style={{
+                alignItems: 'center',
                 backgroundColor,
-                padding: '20px',
-                borderRadius: '10px',
+                borderRadius: '15px',
                 display: 'flex',
                 flexDirection: 'column',
-                alignItems: 'center',
                 justifyContent: 'center',
                 marginBottom: '20px',
                 minHeight: '150px',
+                padding: '20px',
                 position: 'relative'
             }}
         >
-            <Title level={5} style={{ color: '#001010', marginTop: '0px', marginBottom: '10px' }}>{category}</Title>
+            <Title
+                level={5}
+                style={{
+                    color: '#001010',
+                    marginBottom: '10px',
+                    marginTop: '0px',
+                    userSelect: 'none'
+                }}
+            >
+                {category}
+            </Title>
             {isEmpty ? (
                 <Flex
                     align="center"
                     gap="large"
                     onClick={() => navigate('/add-book')}
                     style={{
-                        cursor: 'pointer',
-                        padding: '20px',
-                        borderRadius: '10px',
-                        border: '2.5px dashed #00000070',
                         backgroundColor: '#ffffffB0',
-                        flexDirection: 'column'
+                        border: '2.5px dotted #00000040',
+                        borderRadius: '10px',
+                        cursor: 'pointer',
+                        flexDirection: 'column',
+                        padding: '20px'
                     }}
                 >
                     <div
                         style={{
-                            border: "2.5px solid #000000a0",
-                            borderRadius: '10%',
-                            padding: '10px',
+                            alignContent: 'center',
                             backgroundColor: '#ffffff',
+                            border: "2.5px solid #000000a0",
+                            borderRadius: '50%',
+                            color: '#000000',
                             fontSize: '25px',
-                            color: '#000000'
+                            height: '60px',
+                            padding: '0px',
+                            textAlign: 'center',
+                            width: '60px'
                         }}
                     >
-                        <PlusOutlined style={{ fontSize: '25px', color: '#001010' }} />
+                        <PlusOutlined style={{  color: '#001010', fontSize: '25px' }} />
                     </div>
-                    <Text>{emptyMessage}</Text>
+                    <Text
+                        style={{
+                            userSelect: 'none'
+                        }}>{emptyMessage}</Text>
                 </Flex>
             ) : (
-                <Flex gap="middle" wrap="wrap" justify="center">
-                    {books.map((book) => (
-                        <div
-                            key={book.id}
-                            onClick={() => navigate('')}
-                            style={{
-                                cursor: 'pointer',
-                                flexDirection: 'column',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '10px',
-                                width: '120px'
-                            }}
-                        >
-                            <img src={book.image} alt={book.title} style={{ width: '100%', height: 'auto', borderRadius: '5px' }} />
-                            <Text
-                                style={{
-                                    margin: 0,
-                                    fontFamily: 'Lobster, cursive',
-                                    fontWeight: 'normal',
-                                    textAlign: 'center'
-                                }}
-                            >
-                                {book.title}
-                            </Text>
-                            <Text type="secondary">{book.author}</Text>
-                        </div>
+                <Flex wrap="wrap" justify="center" gap="large">
+                    {books.map((book, index) => (
+                        <BookCard
+                            key={book.id || index}
+                            id={book.id}
+                            title={book.title}
+                            author={book.author}
+                            image={book.image}
+                            rating={book.rating}
+                            showRating={book.showRating}
+                        />
                     ))}
+
                 </Flex>
             )}
         </div>
