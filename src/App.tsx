@@ -13,7 +13,7 @@ function DefaultLayout() {
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <AppHeader />
-      <Content style={{ padding: 24 }}>
+      <Content style={{ backgroundColor: '#fafafa', padding: 25, marginBottom: '70px' }}>
         <Outlet />
       </Content>
       <AppFooter />
@@ -24,7 +24,7 @@ function DefaultLayout() {
 function CleanLayout() {
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Content style={{ padding: 24 }}>
+      <Content style={{ backgroundColor: '#fafafa', padding: 25 }}>
         <Outlet />
       </Content>
     </Layout>
