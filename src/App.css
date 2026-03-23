@@ -201,11 +201,6 @@
   transition: 1s;
 }
 
-.nav-button {
-  cursor: pointer;
-  transition: opacity 0.5s, scale 0.5s;
-}
-
 .card-book:hover {
   background-color: #ffffff00;
   transform: scale(1.05);
@@ -216,9 +211,4 @@
   cursor: pointer;
   background-color: #ffffff;
   transform: scale(1.025);
-}
-
-.nav-button:hover {
-  opacity: 0.9;
-  transform: scale(1.05);
 }

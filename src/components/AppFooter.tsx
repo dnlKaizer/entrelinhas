@@ -1,4 +1,4 @@
-import { Layout, Flex, Typography } from 'antd';
+import { Layout, Flex, Typography, Button } from 'antd';
 import { HomeOutlined, DesktopOutlined } from '@ant-design/icons';
 
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -10,15 +10,13 @@ function AppFooter() {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const isActive = (path: string) => {
-        return location.pathname === path;
-    }
+    const isActive = (path: string) => location.pathname === path;
 
-    // const handleNavigation = (path: string) => {
-    //     if (!isActive(path)) {
-    //         navigate(path);
-    //     }
-    // };
+    const handleNavigation = (path: string) => {
+        if (location.pathname !== path) {
+            navigate(path);
+        }
+    };
 
     return (
         <Footer
@@ -32,43 +30,73 @@ function AppFooter() {
                 textAlign: 'center',
             }}
         >
-            <Flex justify="space-around" align="center" gap="10px">
-                <div
+            <Flex justify="space-evenly" align="center" gap="10px">
+                <nav
                     className='nav-button'
-                    onClick={() => navigate('/')}
-                    style={{ textAlign: 'center' }}
+                    style={{
+                        position: 'relative',
+                        textAlign: 'center',
+                        transition: '0.2s'
+                    }}
                 >
-                    <HomeOutlined
+                    <Button
+                        icon={<HomeOutlined />}
+                        onClick={() => handleNavigation('/')}
+                        shape="circle"
+                        type={isActive('/') ? "primary" : "default"}
                         style={{
-                            fontSize: '25px',
-                            color: isActive('/') ? '#001010' : '#5c5c5c',
-                            cursor: 'pointer'
+                            backgroundColor: isActive('/') ? '#b8b8b8' : '#8b8b8b',
                         }}
                     />
-                    {/* {isActive('/') && (
+                    {isActive('/') && (
                         <div
-                            style={{ width: '5px', height: '5px', backgroundColor: '#003775', borderRadius: '50%', margin: '0 auto', marginTop: '5px' }}
+                            style={{
+                                position: 'absolute',
+                                bottom: '-10px',
+                                left: '50%',
+                                transform: 'translateX(-50%)',
+                                width: '6.0px',
+                                height: '6.0px',
+                                backgroundColor: '#1677fff0',
+                                borderRadius: '50%'
+                            }}
                         />
-                    )} */}
-                </div>
+                    )}
+                </nav>
 
-                <div
+                <nav
                     className='nav-button'
-                    onClick={() => navigate('/dashboard')}
-                    style={{ textAlign: 'center' }}
+                    style={{
+                        position: 'relative',
+                        textAlign: 'center',
+                        transition: '0.2s'
+                    }}
                 >
-                    <DesktopOutlined
+                    <Button
+                        icon={<DesktopOutlined />}
+                        // onClick={() => navigate('/register')}
+                        shape="circle"
+                        type="primary"
                         style={{
-                            color: isActive('/dashboard') ? '#001010' : '#5c5c5c',
-                            fontSize: '25px'
+                            backgroundColor: '#8b8b8b',
+                            boxShadow: '-2.5px 2.5px 5px #00000020'
                         }}
                     />
-                    {/* {isActive('/dashboard') && (
+                    {/* {isActive('/register') && (
                         <div
-                            style={{ width: '5px', height: '5px', backgroundColor: '#003775', borderRadius: '50%', margin: '0 auto', marginTop: '5px' }}
+                            style={{
+                                position: 'absolute',
+                                bottom: '-5px',
+                                left: '50%',
+                                transform: 'translateX(-50%)',
+                                width: '6.0px',
+                                height: '6.0px',
+                                backgroundColor: '#1677fff0',
+                                borderRadius: '50%'
+                            }}
                         />
                     )} */}
-                </div>
+                </nav>
             </Flex>
             <Text
                 type="secondary"
@@ -76,8 +104,9 @@ function AppFooter() {
                     display: 'block',
                     fontFamily: 'Lobster, cursive',
                     fontSize: '15px',
-                    userSelect: 'none',
-                    marginTop: '5px'
+                    letterSpacing: '1.5px',
+                    marginTop: '5px',
+                    userSelect: 'none'
                 }}>
                 EntreLinhas
             </Text>
