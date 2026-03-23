@@ -45,23 +45,9 @@ function AppFooter() {
                         shape="circle"
                         type={isActive('/') ? "primary" : "default"}
                         style={{
-                            backgroundColor: isActive('/') ? '#b8b8b8' : '#8b8b8b',
+                            backgroundColor: isActive('/') ? '#0073c0f0' : '#888888f0',
                         }}
                     />
-                    {isActive('/') && (
-                        <div
-                            style={{
-                                position: 'absolute',
-                                bottom: '-10px',
-                                left: '50%',
-                                transform: 'translateX(-50%)',
-                                width: '6.0px',
-                                height: '6.0px',
-                                backgroundColor: '#1677fff0',
-                                borderRadius: '50%'
-                            }}
-                        />
-                    )}
                 </nav>
 
                 <nav
@@ -74,28 +60,13 @@ function AppFooter() {
                 >
                     <Button
                         icon={<DesktopOutlined />}
-                        // onClick={() => navigate('/register')}
+                        onClick={() => handleNavigation('/')}
                         shape="circle"
-                        type="primary"
+                        type={isActive('/') ? "primary" : "default"}
                         style={{
-                            backgroundColor: '#8b8b8b',
-                            boxShadow: '-2.5px 2.5px 5px #00000020'
+                            backgroundColor: isActive('/') ? '#0073c0f0' : '#888888f0',
                         }}
                     />
-                    {/* {isActive('/register') && (
-                        <div
-                            style={{
-                                position: 'absolute',
-                                bottom: '-5px',
-                                left: '50%',
-                                transform: 'translateX(-50%)',
-                                width: '6.0px',
-                                height: '6.0px',
-                                backgroundColor: '#1677fff0',
-                                borderRadius: '50%'
-                            }}
-                        />
-                    )} */}
                 </nav>
             </Flex>
             <Text
