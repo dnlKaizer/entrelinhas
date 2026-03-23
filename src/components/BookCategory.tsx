@@ -53,7 +53,7 @@ const BookCategory: React.FC<BookCategoryProps> = ({ category, backgroundColor, 
                     className="empty-box"
                     align="center"
                     gap="large"
-                    onClick={() => navigate('/add-book')}
+                    onClick={() => navigate('/register')}
                     style={{
                         borderRadius: '10px',
                         flexDirection: 'column',
@@ -118,7 +118,7 @@ const BookCategory: React.FC<BookCategoryProps> = ({ category, backgroundColor, 
 
                         <Button
                             icon={<PlusOutlined />}
-                            onClick={() => navigate('/add-book')}
+                            onClick={() => navigate('/register')}
                             shape="circle"
                             type="primary"
                             style={{ 
