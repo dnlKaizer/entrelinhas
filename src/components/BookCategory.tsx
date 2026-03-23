@@ -1,8 +1,9 @@
 import { Button, Flex, Typography } from "antd";
-
 import { PlusOutlined } from "@ant-design/icons";
-
 import { useNavigate } from "react-router-dom";
+
+
+import type { IBook } from "../types/book.type";
 
 import BookCard from "./BookCard";
 
@@ -11,14 +12,13 @@ const { Text, Title } = Typography;
 interface BookCategoryProps {
     category: string;
     backgroundColor: string;
-    books: any[]; // Substitua 'any' pelo tipo correto dos livros, se disponível
+    books: IBook[]; 
     emptyMessage: string;
 }
 
 const BookCategory: React.FC<BookCategoryProps> = ({ category, backgroundColor, books, emptyMessage }) => {
     const navigate = useNavigate();
     const isEmpty = books.length === 0;
-    // const numberOfBooks = books.length;
 
     return (
         <div
@@ -28,7 +28,7 @@ const BookCategory: React.FC<BookCategoryProps> = ({ category, backgroundColor, 
                 borderRadius: '15px',
                 display: 'flex',
                 flexDirection: 'column',
-                justifyContent: 'center',
+                justifyContent: 'space-between',
                 marginBottom: '20px',
                 minHeight: '150px',
                 padding: '20px',
@@ -56,7 +56,6 @@ const BookCategory: React.FC<BookCategoryProps> = ({ category, backgroundColor, 
                     onClick={() => navigate('/add-book')}
                     style={{
                         borderRadius: '10px',
-                        cursor: 'pointer',
                         flexDirection: 'column',
                         padding: '20px'
                     }}
@@ -89,15 +88,10 @@ const BookCategory: React.FC<BookCategoryProps> = ({ category, backgroundColor, 
                         justify="center"
                         wrap="wrap"
                     >
-                        {books.map((book, index) => (
+                        {books.map((book) => (
                             <BookCard
-                                key={book.id || index}
-                                id={book.id}
-                                title={book.title}
-                                author={book.author}
-                                image={book.image}
-                                rating={book.rating}
-                                showRating={book.showRating}
+                                key={book.idLivro}
+                                book={book}
                             />
                         ))}
 

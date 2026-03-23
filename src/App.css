@@ -213,7 +213,9 @@
 }
 
 .empty-box:hover {
+  cursor: pointer;
   background-color: #ffffff;
+  transform: scale(1.025);
 }
 
 .nav-button:hover {

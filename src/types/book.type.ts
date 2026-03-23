@@ -14,4 +14,4 @@ export interface IBook {
     img?: string
 }
 
-export type TStatus = 'Lendo' | 'Lido' | 'Desejado';
+export type TStatus = 'Lendo' | 'Lido' | 'Lerei';

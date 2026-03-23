@@ -1,24 +1,19 @@
 import { useNavigate } from "react-router-dom";
-import { Rate, Typography } from "antd";
+import { Typography } from "antd";
+import type { IBook } from "../types/book.type";
 
 const { Text } = Typography;
 
 interface BookCardProps {
-    id: string | number;
-    title: string;
-    author: string;
-    image: string;
-    rating?: number;
-    showRating?: boolean;
+    book: IBook;
 }
-
-const BookCard: React.FC<BookCardProps> = ({ id, title, author, image, rating, showRating }) => {
+const BookCard: React.FC<BookCardProps> = ({ book }) => {
     const navigate = useNavigate();
 
     return (
         <div
             className='card-book'
-            onClick={() => navigate(`/book/${id}`)}
+            onClick={() => navigate(`/book/${book.idLivro}`)}
             style={{
                 alignItems: 'center',
                 backgroundColor: '#ffffffa0',
@@ -33,8 +28,8 @@ const BookCard: React.FC<BookCardProps> = ({ id, title, author, image, rating, s
         >
             <img
                 className='image-cover'
-                src={image}
-                alt={title}
+                src={book.img || "/placeholder.png"}
+                alt={book.nome}
                 style={{
                     borderRadius: '10px',
                     height: '180px',
@@ -60,7 +55,7 @@ const BookCard: React.FC<BookCardProps> = ({ id, title, author, image, rating, s
                     WebkitLineClamp: 2
                 }}
             >
-                {title}
+                {book.nome}
             </Text>
 
             <Text
@@ -73,16 +68,17 @@ const BookCard: React.FC<BookCardProps> = ({ id, title, author, image, rating, s
                     whiteSpace: 'nowrap'
                 }}
             >
-                {author}
+                {book.autor ?? "Autor desconhecido"}
+
             </Text>
 
-            {showRating && (
+            {/* {book.status === "Lido" && (
                 <Rate
                     disabled
-                    defaultValue={rating}
+                    defaultValue={book.rating ?? 0}
                     style={{ cursor: 'pointer', fontSize: '10px' }}
                 />
-            )}
+            )} */}
         </div>
     );
 
