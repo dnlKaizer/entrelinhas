@@ -64,7 +64,7 @@ function AppFooter() {
                         shape="circle"
                         type={isActive('/') ? "primary" : "default"}
                         style={{
-                            backgroundColor: isActive('/') ? '#0073c0f0' : '#888888f0',
+                            backgroundColor: isActive('/narnia') ? '#0073c0f0' : '#888888f0',
                         }}
                     />
                 </nav>
