@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Spin } from 'antd';
+import { Flex, Spin } from 'antd';
 import { bookService } from '../services/book.service';
 
 import BookCategory from '../components/BookCategory'
@@ -31,7 +31,7 @@ function HomePage() {
 
     const lendo = books.filter(b => b.status === "Lendo");
     const lido = books.filter(b => b.status === "Lido");
-    const lerei = books.filter(b => b.status === "Lerei");
+    const desejado = books.filter(b => b.status === "Desejado");
 
     if (loading) {
         return (
@@ -46,7 +46,7 @@ function HomePage() {
     }
 
     return (
-        <div>
+        <Flex vertical align='center' justify='center'>
             <BookCategory
                 category="Lendo"
                 backgroundColor="#E6F7F0"
@@ -55,9 +55,9 @@ function HomePage() {
             />
 
             <BookCategory
-                category="Lerei"
+                category="Desejado"
                 backgroundColor="#FFFBE0"
-                books={lerei}
+                books={desejado}
                 emptyMessage="Adicione aqui o livro que você quer ler"
             />
 
@@ -67,7 +67,7 @@ function HomePage() {
                 books={lido}
                 emptyMessage="Adicione aqui o livro que você já leu"
             />
-        </div>
+        </Flex>
     );
 }
 

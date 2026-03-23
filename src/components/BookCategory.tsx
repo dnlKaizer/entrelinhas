@@ -1,4 +1,4 @@
-import { Button, Flex, Typography } from "antd";
+import { Button, Carousel, Flex, Typography } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
@@ -32,7 +32,8 @@ const BookCategory: React.FC<BookCategoryProps> = ({ category, backgroundColor, 
                 marginBottom: '20px',
                 minHeight: '150px',
                 padding: '20px',
-                position: 'relative'
+                width: '100%',
+                maxWidth: '800px',
             }}
         >
             <Title
