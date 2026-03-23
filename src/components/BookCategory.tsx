@@ -1,4 +1,4 @@
-import { Flex, Typography } from "antd";
+import { Button, Flex, Typography } from "antd";
 
 import { PlusOutlined } from "@ant-design/icons";
 
@@ -39,6 +39,8 @@ const BookCategory: React.FC<BookCategoryProps> = ({ category, backgroundColor, 
                 level={5}
                 style={{
                     color: '#001010',
+                    fontFamily: 'Lobster, cursive',
+                    fontWeight: '300',
                     marginBottom: '10px',
                     marginTop: '0px',
                     userSelect: 'none'
@@ -73,7 +75,7 @@ const BookCategory: React.FC<BookCategoryProps> = ({ category, backgroundColor, 
                             width: '60px'
                         }}
                     >
-                        <PlusOutlined style={{  color: '#001010', fontSize: '25px' }} />
+                        <PlusOutlined style={{ color: '#001010', fontSize: '25px' }} />
                     </div>
                     <Text
                         style={{
@@ -81,22 +83,59 @@ const BookCategory: React.FC<BookCategoryProps> = ({ category, backgroundColor, 
                         }}>{emptyMessage}</Text>
                 </Flex>
             ) : (
-                <Flex wrap="wrap" justify="center" gap="large">
-                    {books.map((book, index) => (
-                        <BookCard
-                            key={book.id || index}
-                            id={book.id}
-                            title={book.title}
-                            author={book.author}
-                            image={book.image}
-                            rating={book.rating}
-                            showRating={book.showRating}
-                        />
-                    ))}
+                <>
+                    <Flex
+                        gap="large"
+                        justify="center"
+                        wrap="wrap"
+                    >
+                        {books.map((book, index) => (
+                            <BookCard
+                                key={book.id || index}
+                                id={book.id}
+                                title={book.title}
+                                author={book.author}
+                                image={book.image}
+                                rating={book.rating}
+                                showRating={book.showRating}
+                            />
+                        ))}
 
-                </Flex>
-            )}
-        </div>
+                    </Flex>
+
+                    <Flex
+                        align="center"
+                        justify="space-between" 
+                        style={{
+                            marginTop: 'auto',
+                            paddingTop: '10px',
+                            width: '100%'   
+                        }}
+                    >
+                        <Text
+                            type="secondary"
+                            style={{
+                                fontSize: '15px',
+                                fontWeight: 300
+                            }}
+                        >
+                            {books.length} {books.length === 1 ? 'livro' : 'livros'}
+                        </Text>
+
+                        <Button
+                            icon={<PlusOutlined />}
+                            onClick={() => navigate('/add-book')}
+                            shape="circle"
+                            type="primary"
+                            style={{ 
+                                backgroundColor: '#8b8b8b',
+                                boxShadow: '-2.5px 2.5px 5px #00000020' }}
+                        />
+                    </Flex>
+                </>
+            )
+            }
+        </div >
     );
 };
 

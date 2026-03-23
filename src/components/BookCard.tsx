@@ -37,7 +37,7 @@ const BookCard: React.FC<BookCardProps> = ({ id, title, author, image, rating, s
                 alt={title}
                 style={{
                     borderRadius: '10px',
-                    height: '200px',
+                    height: '180px',
                     objectFit: 'cover',
                     width: '95%'
                 }}
