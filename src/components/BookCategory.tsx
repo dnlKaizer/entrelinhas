@@ -12,7 +12,7 @@ const { Text, Title } = Typography;
 interface BookCategoryProps {
     category: string;
     backgroundColor: string;
-    books: IBook[]; 
+    books: IBook[];
     emptyMessage: string;
 }
 
@@ -33,7 +33,7 @@ const BookCategory: React.FC<BookCategoryProps> = ({ category, backgroundColor, 
                 minHeight: '150px',
                 padding: '20px',
                 width: '100%',
-                maxWidth: '800px',
+                maxWidth: '700px',
             }}
         >
             <Title
@@ -85,27 +85,33 @@ const BookCategory: React.FC<BookCategoryProps> = ({ category, backgroundColor, 
                 </Flex>
             ) : (
                 <>
-                    <Flex
-                        gap="large"
-                        justify="center"
-                        wrap="wrap"
+                    <div
+                        style={{
+                            width: '100%',
+                            display: 'flex',
+                            flexDirection: 'row',
+                            overflowX: 'auto',
+                            gap: '16px',
+                            padding: '20px',
+                            scrollBehavior: 'smooth',
+                            alignItems: 'center'
+                        }}
+                        className="custom-scroll"
                     >
                         {books.map((book) => (
-                            <BookCard
-                                key={book.idLivro}
-                                book={book}
-                            />
+                            <div key={book.idLivro} style={{ flex: '0 0 auto' }}>
+                                <BookCard book={book} />
+                            </div>
                         ))}
-
-                    </Flex>
+                    </div>
 
                     <Flex
                         align="center"
-                        justify="space-between" 
+                        justify="space-between"
                         style={{
                             marginTop: 'auto',
                             paddingTop: '10px',
-                            width: '100%'   
+                            width: '100%'
                         }}
                     >
                         <Text
@@ -123,9 +129,10 @@ const BookCategory: React.FC<BookCategoryProps> = ({ category, backgroundColor, 
                             onClick={() => navigate('/register')}
                             shape="circle"
                             type="primary"
-                            style={{ 
+                            style={{
                                 backgroundColor: '#8b8b8b',
-                                boxShadow: '-2.5px 2.5px 5px #00000020' }}
+                                boxShadow: '-2.5px 2.5px 5px #00000020'
+                            }}
                         />
                     </Flex>
                 </>

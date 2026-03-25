@@ -212,3 +212,32 @@
   background-color: #ffffff;
   transform: scale(1.025);
 }
+
+/* 1. Largura e Altura da barra de rolagem */
+.custom-scroll::-webkit-scrollbar {
+  height: 5px; /* Altura da barra horizontal (bem fininha) */
+  width: 5px;  /* Altura da barra vertical (se houver) */
+}
+
+/* 2. O Trilho (fundo) da barra de rolagem fica invisível */
+.custom-scroll::-webkit-scrollbar-track {
+  background: transparent; 
+}
+
+/* 3. O "Puxador" da barra de rolagem (o indicador de posição) */
+.custom-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2); /* Cinza clarinho e semi-transparente */
+  border-radius: 10px; /* Bordas arredondadas iguaizinhas às do celular */
+  transition: background-color 0.2s ease;
+}
+
+/* 4. Quando o usuário passa o mouse por cima, ela fica um pouco mais escura */
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0, 0, 0, 0.4); 
+}
+
+/* 5. Compatibilidade com o navegador Firefox */
+.custom-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
