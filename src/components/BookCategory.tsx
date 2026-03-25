@@ -1,23 +1,22 @@
 import { Button, Flex, Typography } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
 
 
-import type { IBook } from "../types/book.type";
+import type { IBook, TStatus } from "../types/book.type";
 
 import BookCard from "./BookCard";
 
 const { Text, Title } = Typography;
 
 interface BookCategoryProps {
-    category: string;
+    category: TStatus;
     backgroundColor: string;
     books: IBook[];
     emptyMessage: string;
+    onAddBook?: (status: TStatus) => void;
 }
 
-const BookCategory: React.FC<BookCategoryProps> = ({ category, backgroundColor, books, emptyMessage }) => {
-    const navigate = useNavigate();
+const BookCategory: React.FC<BookCategoryProps> = ({ category, backgroundColor, books, emptyMessage, onAddBook }) => {
     const isEmpty = books.length === 0;
 
     return (
@@ -55,7 +54,7 @@ const BookCategory: React.FC<BookCategoryProps> = ({ category, backgroundColor, 
                     className="empty-box"
                     align="center"
                     gap="large"
-                    onClick={() => navigate('/register')}
+                    onClick={() => onAddBook?.(category)}
                     style={{
                         borderRadius: '10px',
                         flexDirection: 'column',
@@ -126,7 +125,7 @@ const BookCategory: React.FC<BookCategoryProps> = ({ category, backgroundColor, 
 
                         <Button
                             icon={<PlusOutlined />}
-                            onClick={() => navigate('/register')}
+                            onClick={() => onAddBook?.(category)}
                             shape="circle"
                             type="primary"
                             style={{
