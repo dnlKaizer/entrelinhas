@@ -29,7 +29,7 @@ function AppFooter() {
                 textAlign: 'center',
             }}
         >
-            <Flex justify="space-evenly" align="center" gap="10px">
+            <Flex justify="space-evenly" align="center" gap="10px" style={{ maxWidth: '720px', margin: '0 auto' }}>
                 <nav
                     className='nav-button'
                     style={{
