@@ -43,8 +43,8 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
                 style={{
                     color: '#242424',
                     display: '-webkit-box',
-                    fontFamily: 'Lobster, cursive',
-                    fontSize: '15px',
+                    fontFamily: '--apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+                    fontSize: '16px',
                     fontWeight: '300',
                     height: '2.5em',
                     lineHeight: '1.25em',
@@ -61,11 +61,12 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
             <Text
                 type="secondary"
                 style={{
-                    fontSize: '10px',
+                    fontSize: '12px',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                     userSelect: 'none',
-                    whiteSpace: 'nowrap'
+                    whiteSpace: 'nowrap',
+                    fontWeight: 500
                 }}
             >
                 {book.autor ?? "Autor desconhecido"}

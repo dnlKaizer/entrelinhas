@@ -49,21 +49,21 @@ function HomePage() {
         <Flex vertical align='center' justify='center'>
             <BookCategory
                 category="Lendo"
-                backgroundColor="#E6F7F0"
+                backgroundColor="#d1e6fb"
                 books={lendo}
                 emptyMessage="Adicione aqui o livro que você está lendo"
             />
 
             <BookCategory
                 category="Desejado"
-                backgroundColor="#FFFBE0"
+                backgroundColor="#fff8cd"
                 books={desejado}
                 emptyMessage="Adicione aqui o livro que você quer ler"
             />
 
             <BookCategory
                 category="Lido"
-                backgroundColor="#F9F0F0"
+                backgroundColor="#ffd7d7"
                 books={lido}
                 emptyMessage="Adicione aqui o livro que você já leu"
             />

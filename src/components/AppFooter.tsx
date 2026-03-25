@@ -1,10 +1,9 @@
-import { Layout, Flex, Typography, Button } from 'antd';
+import { Layout, Flex, Button } from 'antd';
 import { HomeOutlined, DesktopOutlined } from '@ant-design/icons';
 
 import { useNavigate, useLocation } from 'react-router-dom';
 
 const { Footer } = Layout;
-const { Text } = Typography;
 
 function AppFooter() {
     const navigate = useNavigate();
@@ -69,18 +68,6 @@ function AppFooter() {
                     />
                 </nav>
             </Flex>
-            <Text
-                type="secondary"
-                style={{
-                    display: 'block',
-                    fontFamily: 'Lobster, cursive',
-                    fontSize: '15px',
-                    letterSpacing: '1.5px',
-                    marginTop: '5px',
-                    userSelect: 'none'
-                }}>
-                EntreLinhas
-            </Text>
         </Footer>
     )
 }
