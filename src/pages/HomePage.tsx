@@ -1,16 +1,21 @@
 import { useEffect, useState } from 'react';
-import { Flex, Spin } from 'antd';
+import { Flex, Spin, message } from 'antd';
 import { bookService } from '../services/book.service';
 
 import BookCategory from '../components/BookCategory'
+import AppCreateBookModal from '../components/AppCreateBookModal';
+import type { CreateBookFormValues } from '../components/AppCreateBookModal';
 
-import type { IBook } from '../types/book.type';
+import type { IBook, TStatus } from '../types/book.type';
 
 
 function HomePage() {
     const [books, setBooks] = useState<IBook[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [createModalStatus, setCreateModalStatus] = useState<TStatus | undefined>(undefined);
+    const [isCreatingBook, setIsCreatingBook] = useState(false);
 
     useEffect(() => {
         async function fetchBooks() {
@@ -33,6 +38,38 @@ function HomePage() {
     const lido = books.filter(b => b.status === "Lido");
     const desejado = books.filter(b => b.status === "Desejado");
 
+    const handleOpenCreateModal = (status: TStatus) => {
+        setCreateModalStatus(status);
+        setIsCreateModalOpen(true);
+    };
+
+    const handleCloseCreateModal = () => {
+        setIsCreateModalOpen(false);
+    };
+
+    const handleCreateBook = async (values: CreateBookFormValues) => {
+        try {
+            setIsCreatingBook(true);
+
+            const payload: Omit<IBook, 'idLivro'> = {
+                ...values,
+                dtInicial: values.dtInicial?.format('YYYY-MM-DD'),
+                dtFinal: values.dtFinal?.format('YYYY-MM-DD'),
+                idUsuario: 1,
+            };
+
+            const createdBook = await bookService.create(payload);
+            setBooks((previousBooks) => [...previousBooks, createdBook]);
+            setIsCreateModalOpen(false);
+            message.success('Livro cadastrado com sucesso!');
+        } catch (error) {
+            console.error('Erro ao cadastrar livro:', error);
+            message.error('Nao foi possivel cadastrar o livro.');
+        } finally {
+            setIsCreatingBook(false);
+        }
+    };
+
     if (loading) {
         return (
             <div style={{ display: "flex", justifyContent: "center", marginTop: 50 }}>
@@ -52,6 +89,7 @@ function HomePage() {
                 backgroundColor="#d1e6fb"
                 books={lendo}
                 emptyMessage="Adicione aqui o livro que você está lendo"
+                onAddBook={handleOpenCreateModal}
             />
 
             <BookCategory
@@ -59,6 +97,7 @@ function HomePage() {
                 backgroundColor="#fff8cd"
                 books={desejado}
                 emptyMessage="Adicione aqui o livro que você quer ler"
+                onAddBook={handleOpenCreateModal}
             />
 
             <BookCategory
@@ -66,6 +105,15 @@ function HomePage() {
                 backgroundColor="#ffd7d7"
                 books={lido}
                 emptyMessage="Adicione aqui o livro que você já leu"
+                onAddBook={handleOpenCreateModal}
+            />
+
+            <AppCreateBookModal
+                open={isCreateModalOpen}
+                onClose={handleCloseCreateModal}
+                onSubmit={handleCreateBook}
+                submitting={isCreatingBook}
+                initialStatus={createModalStatus}
             />
         </Flex>
     );
