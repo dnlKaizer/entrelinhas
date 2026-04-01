@@ -1,9 +1,10 @@
-import { Typography } from 'antd'
-
-const { Title } = Typography
+import AppAuth from '../components/auth/AppAuth'
+import AppRegisterForm from '../components/auth/AppRegisterForm'
 
 function RegisterPage() {
-    return <Title level={2}>Cadastro</Title>
+    return <AppAuth>
+            <AppRegisterForm />
+        </AppAuth>
 }
 
 export default RegisterPage
