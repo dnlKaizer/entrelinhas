@@ -10,7 +10,7 @@ export interface IBook {
     dtInicial?: string
     dtFinal?: string
     numPagRead: number
-    idUsuario: number
+    idUsuario: string
     img?: string
 }
 
