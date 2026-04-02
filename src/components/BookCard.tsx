@@ -9,7 +9,7 @@ interface BookCardProps {
     book: IBook;
 }
 const BookCard: React.FC<BookCardProps> = ({ book }) => {
-    const imageUrl = useSignedImageUrl({ path: book.img, bucket: "covers", expiresIn: 60 });
+    const imageUrl = useSignedImageUrl({ path: book.img, bucket: "covers" });
 
     const navigate = useNavigate();
 
