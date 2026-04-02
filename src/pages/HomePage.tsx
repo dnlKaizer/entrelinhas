@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Flex, Spin, message } from 'antd';
 import { bookService } from '../services/book.service';
+import { authService } from '../services/auth.service';
 
 import BookCategory from '../components/BookCategory'
 import AppCreateBookModal from '../components/AppCreateBookModal';
@@ -51,11 +52,22 @@ function HomePage() {
         try {
             setIsCreatingBook(true);
 
+            const { user } = await authService.getCurrentUser();
+            if (!user) throw new Error('Usuário nao autenticado');
+
+            const selectedCover = values.coverFileList?.[0]?.originFileObj;
+            const uploadedCoverPath = selectedCover
+                ? await bookService.uploadCover(selectedCover, user.id)
+                : undefined;
+
+            const { dtInicial, dtFinal, coverFileList, ...bookValues } = values;
+
             const payload: Omit<IBook, 'idLivro'> = {
-                ...values,
-                dtInicial: values.dtInicial?.format('YYYY-MM-DD'),
-                dtFinal: values.dtFinal?.format('YYYY-MM-DD'),
-                idUsuario: '51511986-9897-4fe6-bcd0-f0eb6ad4f061', // TODO: substituir pelo ID do usuário logado
+                ...bookValues,
+                dtInicial: dtInicial?.format('YYYY-MM-DD'),
+                dtFinal: dtFinal?.format('YYYY-MM-DD'),
+                idUsuario: user.id,
+                img: uploadedCoverPath,
             };
 
             const createdBook = await bookService.create(payload);

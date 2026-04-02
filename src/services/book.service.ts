@@ -6,6 +6,23 @@ const ID_COLUMN = 'idLivro';
 
 class BookService {
 
+    async uploadCover(file: File, userId: string): Promise<string> {
+        const extension = file.name.split('.').pop() ?? 'jpg';
+        const filePath = `${userId}/${crypto.randomUUID()}.${extension}`;
+
+        const { error } = await supabase
+            .storage
+            .from('covers')
+            .upload(filePath, file, {
+                cacheControl: '3600',
+                upsert: false,
+            });
+
+        if (error) throw error;
+
+        return filePath;
+    }
+
     async findAll(): Promise<IBook[] | null> {
         const { data, error } = await supabase
             .from(TABLE_NAME)

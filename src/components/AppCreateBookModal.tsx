@@ -9,7 +9,9 @@ import {
     Modal,
     Select,
     Space,
+    Upload,
 } from 'antd';
+import type { UploadFile } from 'antd';
 import type { Dayjs } from 'dayjs';
 
 import type { IBook, TStatus } from '../types/book.type';
@@ -32,7 +34,7 @@ export interface CreateBookFormValues {
     dtInicial?: Dayjs;
     dtFinal?: Dayjs;
     numPagRead: IBook['numPagRead'];
-    img?: IBook['img'];
+    coverFileList?: UploadFile[];
 }
 
 function AppCreateBookModal({ open, onClose, onSubmit, submitting = false, initialStatus }: AppCreateBookModalProps) {
@@ -148,11 +150,18 @@ function AppCreateBookModal({ open, onClose, onSubmit, submitting = false, initi
                 </Space>
 
                 <Form.Item
-                    label="Imagem (URL)"
-                    name="img"
-                    rules={[{ type: 'url', message: 'Informe uma URL valida.' }]}
+                    label="Imagem da capa"
+                    name="coverFileList"
+                    valuePropName="fileList"
+                    getValueFromEvent={(event) => event?.fileList}
                 >
-                    <Input placeholder="https://..." />
+                    <Upload
+                        beforeUpload={() => false}
+                        accept="image/*"
+                        maxCount={1}
+                    >
+                        <Button>Selecionar imagem</Button>
+                    </Upload>
                 </Form.Item>
 
                 <Form.Item label="Descrição" name="text">
