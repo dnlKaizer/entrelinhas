@@ -8,11 +8,12 @@ import RegisterPage from './pages/RegisterPage'
 import { useAuthSession } from './hooks/useAuthSession'
 import DefaultLayout from './routes/layouts/DefaultLayout'
 import CleanLayout from './routes/layouts/CleanLayout'
+import LoadingPage from './pages/LoadingPage'
 
 function App() {
   const { isAuthenticated, authLoading } = useAuthSession()
 
-  if (authLoading) return <div>Carregando...</div>
+  if (authLoading) return <LoadingPage />
 
   return (
     <BrowserRouter>
