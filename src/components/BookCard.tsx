@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Typography } from "antd";
 import type { IBook } from "../types/book.type";
+import { useSignedImageUrl } from "../hooks/useSignedImageUrl";
 
 const { Text } = Typography;
 
@@ -8,6 +9,8 @@ interface BookCardProps {
     book: IBook;
 }
 const BookCard: React.FC<BookCardProps> = ({ book }) => {
+    const imageUrl = useSignedImageUrl({ path: book.img, bucket: "covers", expiresIn: 60 });
+
     const navigate = useNavigate();
 
     return (
@@ -28,7 +31,7 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
         >
             <img
                 className='image-cover'
-                src={book.img || "/placeholder.png"}
+                src={imageUrl}
                 alt={book.nome}
                 style={{
                     borderRadius: '10px',
