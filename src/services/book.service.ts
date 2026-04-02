@@ -8,7 +8,7 @@ class BookService {
 
     async uploadCover(file: File, userId: string): Promise<string> {
         const extension = file.name.split('.').pop() ?? 'jpg';
-        const filePath = `${userId}/${crypto.randomUUID()}.${extension}`;
+        const filePath = `${userId}/${this.generateId()}.${extension}`;
 
         const { error } = await supabase
             .storage
@@ -21,6 +21,12 @@ class BookService {
         if (error) throw error;
 
         return filePath;
+    }
+
+    private generateId(): string {
+        const timestamp = Date.now().toString(36);
+        const randomStr = Math.random().toString(36).substring(2, 8);
+        return `${timestamp}-${randomStr}`;
     }
 
     async findAll(): Promise<IBook[] | null> {
