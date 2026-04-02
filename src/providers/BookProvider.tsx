@@ -5,6 +5,7 @@ import { authService } from '../services/auth.service';
 import { bookService } from '../services/book.service';
 import { supabase } from '../services/supabase.client';
 import type { IBook } from '../types/book.type';
+import { clearSignedImageCache } from '../hooks/useSignedImageUrl';
 
 const BOOK_CACHE_TTL_MS = 5 * 60 * 1000;
 
@@ -42,6 +43,7 @@ export function BookProvider({ children }: { children: ReactNode }) {
             books: [],
             lastFetchAt: 0,
         };
+        clearSignedImageCache();
         setBooks([]);
         setError(null);
     }, []);
