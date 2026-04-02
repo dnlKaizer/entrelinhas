@@ -1,86 +1,22 @@
-import { useEffect, useState } from 'react';
-import { Flex, Spin, message } from 'antd';
-import { bookService } from '../services/book.service';
-import { authService } from '../services/auth.service';
+import { Flex, Spin } from 'antd';
+import { useHomePage } from '../hooks/useHomePage';
 
 import BookCategory from '../components/BookCategory'
 import AppCreateBookModal from '../components/AppCreateBookModal';
-import type { CreateBookFormValues } from '../components/AppCreateBookModal';
-
-import type { IBook, TStatus } from '../types/book.type';
-
-
 function HomePage() {
-    const [books, setBooks] = useState<IBook[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
-    const [createModalStatus, setCreateModalStatus] = useState<TStatus | undefined>(undefined);
-    const [isCreatingBook, setIsCreatingBook] = useState(false);
-
-    useEffect(() => {
-        async function fetchBooks() {
-            try {
-                const data = await bookService.findAll();
-                // console.log("DATA DO BANCO:", data);
-                setBooks(data ?? []);
-            } catch (error) {
-                console.error("Erro ao buscar livros:", error);
-                setError("Erro ao carregar livros");
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        fetchBooks();
-    }, []);
-
-    const lendo = books.filter(b => b.status === "Lendo");
-    const lido = books.filter(b => b.status === "Lido");
-    const desejado = books.filter(b => b.status === "Desejado");
-
-    const handleOpenCreateModal = (status: TStatus) => {
-        setCreateModalStatus(status);
-        setIsCreateModalOpen(true);
-    };
-
-    const handleCloseCreateModal = () => {
-        setIsCreateModalOpen(false);
-    };
-
-    const handleCreateBook = async (values: CreateBookFormValues) => {
-        try {
-            setIsCreatingBook(true);
-
-            const { user } = await authService.getCurrentUser();
-            if (!user) throw new Error('Usuário nao autenticado');
-
-            const selectedCover = values.coverFileList?.[0]?.originFileObj;
-            const uploadedCoverPath = selectedCover
-                ? await bookService.uploadCover(selectedCover, user.id)
-                : undefined;
-
-            const { dtInicial, dtFinal, coverFileList, ...bookValues } = values;
-
-            const payload: Omit<IBook, 'idLivro'> = {
-                ...bookValues,
-                dtInicial: dtInicial?.format('YYYY-MM-DD'),
-                dtFinal: dtFinal?.format('YYYY-MM-DD'),
-                idUsuario: user.id,
-                img: uploadedCoverPath,
-            };
-
-            const createdBook = await bookService.create(payload);
-            setBooks((previousBooks) => [...previousBooks, createdBook]);
-            setIsCreateModalOpen(false);
-            message.success('Livro cadastrado com sucesso!');
-        } catch (error) {
-            console.error('Erro ao cadastrar livro:', error);
-            message.error('Nao foi possivel cadastrar o livro.');
-        } finally {
-            setIsCreatingBook(false);
-        }
-    };
+    const {
+        loading,
+        error,
+        isCreateModalOpen,
+        createModalStatus,
+        isCreatingBook,
+        lendo,
+        lido,
+        desejado,
+        handleOpenCreateModal,
+        handleCloseCreateModal,
+        handleCreateBook,
+    } = useHomePage();
 
     if (loading) {
         return (
