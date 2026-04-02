@@ -1,9 +1,10 @@
-import { Typography } from 'antd'
-
-const { Title } = Typography
+import AppAuth from "../components/auth/AppAuth"
+import AppLoginForm from "../components/auth/AppLoginForm"
 
 function LoginPage() {
-    return <Title level={2}>Login</Title>
+    return <AppAuth>
+            <AppLoginForm />
+        </AppAuth>
 }
 
 export default LoginPage

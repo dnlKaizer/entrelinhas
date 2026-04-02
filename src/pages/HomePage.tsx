@@ -55,7 +55,7 @@ function HomePage() {
                 ...values,
                 dtInicial: values.dtInicial?.format('YYYY-MM-DD'),
                 dtFinal: values.dtFinal?.format('YYYY-MM-DD'),
-                idUsuario: 1,
+                idUsuario: '51511986-9897-4fe6-bcd0-f0eb6ad4f061', // TODO: substituir pelo ID do usuário logado
             };
 
             const createdBook = await bookService.create(payload);
