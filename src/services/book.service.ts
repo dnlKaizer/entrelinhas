@@ -29,10 +29,11 @@ class BookService {
         return `${timestamp}-${randomStr}`;
     }
 
-    async findAll(): Promise<IBook[] | null> {
+    async findAllByUser(userId: string): Promise<IBook[] | null> {
         const { data, error } = await supabase
             .from(TABLE_NAME)
-            .select('*');
+            .select('*')
+            .eq('idUsuario', userId);
         if (error) throw error;
         return data;
     }

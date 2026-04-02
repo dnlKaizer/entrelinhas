@@ -1,33 +1,20 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { message } from 'antd';
 import { authService } from '../services/auth.service';
 import { bookService } from '../services/book.service';
 import type { CreateBookFormValues } from '../components/AppCreateBookModal';
 import type { IBook, TStatus } from '../types/book.type';
+import { useBooks } from '../providers/BookProvider';
 
 export function useHomePage() {
-    const [books, setBooks] = useState<IBook[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+    const { books, loading, error, loadBooks, addBookToCache } = useBooks();
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
     const [createModalStatus, setCreateModalStatus] = useState<TStatus | undefined>(undefined);
     const [isCreatingBook, setIsCreatingBook] = useState(false);
 
     useEffect(() => {
-        async function fetchBooks() {
-            try {
-                const data = await bookService.findAll();
-                setBooks(data ?? []);
-            } catch (fetchError) {
-                console.error('Erro ao buscar livros:', fetchError);
-                setError('Erro ao carregar livros');
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        fetchBooks();
-    }, []);
+        void loadBooks();
+    }, [loadBooks]);
 
     const handleOpenCreateModal = (status: TStatus) => {
         setCreateModalStatus(status);
@@ -61,7 +48,7 @@ export function useHomePage() {
             };
 
             const createdBook = await bookService.create(payload);
-            setBooks((previousBooks) => [...previousBooks, createdBook]);
+            addBookToCache(createdBook);
             setIsCreateModalOpen(false);
             message.success('Livro cadastrado com sucesso!');
         } catch (createError) {
@@ -78,9 +65,9 @@ export function useHomePage() {
         isCreateModalOpen,
         createModalStatus,
         isCreatingBook,
-        lendo: books.filter((book) => book.status === 'Lendo'),
-        lido: books.filter((book) => book.status === 'Lido'),
-        desejado: books.filter((book) => book.status === 'Desejado'),
+        lendo: useMemo(() => books.filter((book) => book.status === 'Lendo'), [books]),
+        lido: useMemo(() => books.filter((book) => book.status === 'Lido'), [books]),
+        desejado: useMemo(() => books.filter((book) => book.status === 'Desejado'), [books]),
         handleOpenCreateModal,
         handleCloseCreateModal,
         handleCreateBook,
