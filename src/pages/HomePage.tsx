@@ -1,4 +1,4 @@
-import { Flex, Spin } from 'antd';
+import { Flex } from 'antd';
 import { useHomePage } from '../hooks/useHomePage';
 
 import BookCategory from '../components/BookCategory'

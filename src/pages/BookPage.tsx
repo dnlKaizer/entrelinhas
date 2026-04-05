@@ -1,4 +1,4 @@
-import { Card, Typography, Button, Space, Divider, Progress, Tag, Spin } from "antd";
+import { Card, Typography, Button, Space, Divider, Progress, Tag } from "antd";
 import { BookOutlined, CalendarOutlined } from "@ant-design/icons";
 import { useParams } from "react-router-dom";
 import { useBookDetails } from "../hooks/useBookDetails";
