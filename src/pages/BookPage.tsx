@@ -1,4 +1,4 @@
-import { Card, Typography, Button, Space, Divider, Progress, Tag } from "antd";
+import { Card, Typography, Button, Space, Divider, Progress, Tag, Spin } from "antd";
 import { BookOutlined, CalendarOutlined } from "@ant-design/icons";
 import { useParams } from "react-router-dom";
 import { useBookDetails } from "../hooks/useBookDetails";
@@ -6,6 +6,7 @@ import { InfoItem } from "../components/InfoItem";
 import { BackButton } from "../components/BackButton";
 import { useSignedImageUrl } from "../hooks/useSignedImageUrl";
 import { formatDate } from "../utils/formatDate";
+import { Loader } from "../components/Loader";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -18,7 +19,7 @@ export function BookPage() {
         bucket: "covers"
     });
 
-    if (loading) return <p>Carregando...</p>;
+    if (loading) return <Loader description="Carregando livro..." clean={true} />;
     if (!book) return <p>Livro não encontrado</p>;
 
 
@@ -44,7 +45,7 @@ export function BookPage() {
                     borderRadius: 20,
                     boxShadow: "0 5px 10px rgba(0,0,0,0.1)",
                 }}
-                bodyStyle={{ padding: 15 }}
+                styles={{ body: { padding: 15 } }}
             >
                 {/* CAPA */}
                 <div style={{ textAlign: "center" }}>

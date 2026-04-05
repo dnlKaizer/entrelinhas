@@ -3,6 +3,7 @@ import { useHomePage } from '../hooks/useHomePage';
 
 import BookCategory from '../components/BookCategory'
 import AppCreateBookModal from '../components/AppCreateBookModal';
+import { Loader } from '../components/Loader';
 function HomePage() {
     const {
         loading,
@@ -18,13 +19,7 @@ function HomePage() {
         handleCreateBook,
     } = useHomePage();
 
-    if (loading) {
-        return (
-            <div style={{ display: "flex", justifyContent: "center", marginTop: 50 }}>
-                <Spin size="large" />
-            </div>
-        );
-    }
+    if (loading) return <Loader description="Carregando página..." clean={false} />;
 
     if (error) {
         return <p>{error}</p>;
