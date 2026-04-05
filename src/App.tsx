@@ -9,6 +9,7 @@ import { useAuthSession } from './hooks/useAuthSession'
 import DefaultLayout from './routes/layouts/DefaultLayout'
 import CleanLayout from './routes/layouts/CleanLayout'
 import LoadingPage from './pages/LoadingPage'
+import { BookPage } from './pages/BookPage'
 
 function App() {
   const { isAuthenticated, authLoading } = useAuthSession()
@@ -24,10 +25,16 @@ function App() {
           </Route>
         </Route>
 
+
+
         <Route element={<CleanLayout />}>
           <Route element={<PublicRoute isAuthenticated={isAuthenticated} />}>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+
+          </Route>
+          <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />}>
+            <Route path="/book/:id" element={<BookPage />} />
           </Route>
         </Route>
 

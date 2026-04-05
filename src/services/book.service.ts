@@ -76,6 +76,17 @@ class BookService {
             .eq(ID_COLUMN, id);
         if (error) throw error;
     }
+
+    async getCoverUrl(path?: string): Promise<string> {
+        if (!path) return "/placeholder.png";
+
+        const { data } = supabase
+            .storage
+            .from("covers")
+            .getPublicUrl(path);
+
+        return data.publicUrl;
+    }
 }
 
 export const bookService = new BookService();
