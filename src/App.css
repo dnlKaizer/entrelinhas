@@ -241,3 +241,22 @@
   scrollbar-width: thin;
   scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
 }
+
+
+/* margem nos labels */
+.ant-form-item-label > label {
+  margin-left: 5px;
+  font-weight: 500;
+}
+
+/* asterisco antes do texto */
+.ant-form-item-required::before {
+  order: -1; /* joga o asterisco pra frente */
+  margin-right: 4px;
+}
+
+/* remove posicionamento estranho padrão */
+.ant-form-item-required {
+  display: inline-flex;
+  align-items: center;
+}
