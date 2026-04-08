@@ -3,11 +3,11 @@ import { Content } from "antd/es/layout/layout";
 import Title from "antd/es/typography/Title";
 import type { ReactNode } from "react";
 
-interface AppAuthProps {
+interface AppBackgroundProps {
     children: ReactNode
 }
 
-function AppAuth({ children }: AppAuthProps) {
+function AppBackground({ children }: AppBackgroundProps) {
     return <>
         <Layout
             style={{
@@ -42,4 +42,4 @@ function AppAuth({ children }: AppAuthProps) {
     </>
 }
 
-export default AppAuth
+export default AppBackground

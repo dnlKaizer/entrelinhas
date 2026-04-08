@@ -1,10 +1,10 @@
-import AppAuth from '../components/auth/AppAuth'
+import AppBackground from '../components/AppBackground'
 import AppRegisterForm from '../components/auth/AppRegisterForm'
 
 function RegisterPage() {
-    return <AppAuth>
+    return <AppBackground>
             <AppRegisterForm />
-        </AppAuth>
+        </AppBackground>
 }
 
 export default RegisterPage
