@@ -1,55 +1,46 @@
 import { Card, Typography, Button, Space, Divider, Progress, Tag, Result } from "antd";
 import { BookOutlined, CalendarOutlined } from "@ant-design/icons";
 import { useNavigate, useParams } from "react-router-dom";
-import { useBookDetails } from "../hooks/useBookDetails";
 import { InfoItem } from "../components/InfoItem";
 import { BackButton } from "../components/BackButton";
-import { useSignedImageUrl } from "../hooks/useSignedImageUrl";
 import { formatDate } from "../utils/formatDate";
-import { Loader } from "../components/Loader";
 import { useEffect, useState } from "react";
+import { useBookById } from "../providers/BookProvider";
+import { useSignedImageUrl } from "../hooks/useSignedImageUrl";
 
 const { Title, Text, Paragraph } = Typography;
 
 export function BookPage() {
     const { id } = useParams();
     const navigate = useNavigate();
-
-    const { book, loading } = useBookDetails(id!);
-
-    const imageUrl = useSignedImageUrl({
-        path: book?.img,
-        bucket: "covers"
-    });
+    const book = useBookById(Number(id));
     const [count, setCount] = useState(5);
-
+    
     useEffect(() => {
-        if (!book && !loading) {
+        if (!book) {
             const interval = setInterval(() => {
                 setCount((c) => (c > 0 ? c - 1 : 0));
             }, 1000);
-
+            
             const timer = setTimeout(() => {
                 navigate("/");
             }, 5000);
-
+            
             return () => {
                 clearInterval(interval);
                 clearTimeout(timer);
             };
         }
-    }, [book, loading, navigate]);
-
-    if (loading) return <Loader description="Carregando livro..." clean={true} />;
-
+    }, [book, navigate]);
+    
     if (!book) {
         return (
             <Result
-                status="404"
-                title="Livro não encontrado"
-                subTitle={`Você será redirecionado em ${count}s`}
-                extra={[
-                    <Button type="primary" onClick={() => navigate("/")}>
+            status="404"
+            title="Livro não encontrado"
+            subTitle={`Você será redirecionado em ${count}s`}
+            extra={[
+                <Button key="back" type="primary" onClick={() => navigate("/")}>
                         Voltar agora
                     </Button>
                 ]}
@@ -57,7 +48,7 @@ export function BookPage() {
         );
     }
 
-
+    const imageUrl = useSignedImageUrl({ path: book.img, bucket: "covers" });
     const progress = Math.round(
         (book.numPagRead / book.numPag) * 100
     );
