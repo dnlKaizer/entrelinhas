@@ -1,4 +1,4 @@
-import { Card, Typography, Button, Space, Divider, Progress, Tag, Result } from "antd";
+import { Card, Typography, Button, Space, Divider, Progress, Tag, Result, Flex } from "antd";
 import { BookOutlined, CalendarOutlined } from "@ant-design/icons";
 import { useNavigate, useParams } from "react-router-dom";
 import { InfoItem } from "../components/InfoItem";
@@ -56,20 +56,17 @@ export function BookPage() {
 
     return (
         <AppBackground>
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    padding: 15,
-                    minHeight: "fit-content",
-                    maxHeight: "calc(100vh - 30px)",
-                    overflowY: "auto"
-                }}
+            <Flex
+                vertical
+                justify="center"
+                align="center"
+                style={{ width: "100%" }}
             >
                 <BackButton />
                 <Card
                     style={{
-                        width: 340,
+                        maxWidth: 400,
+                        width: "100%",
                         borderRadius: 20,
                         boxShadow: "0 5px 10px rgba(0,0,0,0.1)",
                     }}
@@ -175,7 +172,7 @@ export function BookPage() {
                                 : "Iniciar leitura"}
                     </Button>
                 </Card>
-            </div>
+            </Flex>
         </AppBackground>
     );
 }
