@@ -143,3 +143,11 @@ export function useBooks() {
 
     return context;
 }
+
+export function useBookById(id: number): IBook | null {
+    const { books } = useBooks();
+
+    return useMemo(() => {
+        return books.find((book) => book.idLivro === id) ?? null;
+    }, [books, id]);
+}

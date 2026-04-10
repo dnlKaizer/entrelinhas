@@ -1,4 +1,3 @@
-
 import { useEffect } from 'react';
 import {
     Button,
@@ -8,8 +7,10 @@ import {
     InputNumber,
     Modal,
     Select,
-    Space,
+    Row,
+    Col,
     Upload,
+    Space
 } from 'antd';
 import type { UploadFile } from 'antd';
 import type { Dayjs } from 'dayjs';
@@ -19,7 +20,7 @@ import type { IBook, TStatus } from '../types/book.type';
 interface AppCreateBookModalProps {
     open: boolean;
     onClose: () => void;
-    onSubmit: (values: CreateBookFormValues) => void | Promise<void>;
+    onSubmit: (values: any) => void | Promise<void>;
     submitting?: boolean;
     initialStatus?: TStatus;
 }
@@ -37,12 +38,20 @@ export interface CreateBookFormValues {
     coverFileList?: UploadFile[];
 }
 
-function AppCreateBookModal({ open, onClose, onSubmit, submitting = false, initialStatus }: AppCreateBookModalProps) {
+function AppCreateBookModal({
+    open,
+    onClose,
+    onSubmit,
+    submitting = false,
+    initialStatus
+}: AppCreateBookModalProps) {
+
     const [form] = Form.useForm<CreateBookFormValues>();
 
     useEffect(() => {
         if (!open) {
             form.resetFields();
+            form.setFieldsValue({ coverFileList: [] });
             return;
         }
 
@@ -53,7 +62,13 @@ function AppCreateBookModal({ open, onClose, onSubmit, submitting = false, initi
     }, [open, form, initialStatus]);
 
     const handleSubmit = (values: CreateBookFormValues) => {
-        onSubmit(values);
+        const formatted = {
+            ...values,
+            dtInicial: values.dtInicial?.format("YYYY-MM-DD"),
+            dtFinal: values.dtFinal?.format("YYYY-MM-DD"),
+        };
+
+        onSubmit(formatted);
     };
 
     return (
@@ -65,11 +80,12 @@ function AppCreateBookModal({ open, onClose, onSubmit, submitting = false, initi
             footer={null}
             destroyOnHidden
         >
-            <Form<CreateBookFormValues>
+            <Form
                 form={form}
                 layout="vertical"
                 onFinish={handleSubmit}
             >
+                {/* NOME */}
                 <Form.Item
                     label="Nome"
                     name="nome"
@@ -78,96 +94,130 @@ function AppCreateBookModal({ open, onClose, onSubmit, submitting = false, initi
                     <Input placeholder="Ex.: O Hobbit" />
                 </Form.Item>
 
-                <Space style={{ width: '100%' }} size={12} align="start" wrap>
-                    <Form.Item
-                        label="Autor"
-                        name="autor"
-                        style={{ flex: 1, minWidth: 220 }}
-                    >
-                        <Input placeholder="Ex.: J.R.R. Tolkien" />
-                    </Form.Item>
+                {/* AUTOR + ANO */}
+                <Row gutter={12}>
+                    <Col span={16}>
+                        <Form.Item label="Autor" name="autor">
+                            <Input placeholder="Ex.: J.R.R. Tolkien" />
+                        </Form.Item>
+                    </Col>
 
-                    <Form.Item
-                        label="Ano"
-                        name="ano"
-                        style={{ minWidth: 120 }}
-                    >
-                        <InputNumber style={{ width: '100%' }} min={0} max={9999} />
-                    </Form.Item>
-                </Space>
+                    <Col span={8}>
+                        <Form.Item label="Ano" name="ano">
+                            <InputNumber style={{ width: '100%' }} min={0} max={9999} />
+                        </Form.Item>
+                    </Col>
+                </Row>
 
-                <Space style={{ width: '100%' }} size={12} align="start" wrap>
-                    <Form.Item
-                        label="Status"
-                        name="status"
-                        rules={[{ required: true, message: 'Selecione um status.' }]}
-                        style={{ minWidth: 160 }}
-                    >
-                        <Select
-                            options={[
-                                { label: 'Lendo', value: 'Lendo' },
-                                { label: 'Lido', value: 'Lido' },
-                                { label: 'Desejado', value: 'Desejado' },
+                {/* STATUS + PAGINAS */}
+                <Row gutter={12}>
+                    <Col span={8}>
+                        <Form.Item
+                            label="Status"
+                            name="status"
+                            rules={[{ required: true }]}
+                        >
+                            <Select
+                                options={[
+                                    { label: 'Lendo', value: 'Lendo' },
+                                    { label: 'Lido', value: 'Lido' },
+                                    { label: 'Desejado', value: 'Desejado' },
+                                ]}
+                            />
+                        </Form.Item>
+                    </Col>
+
+                    <Col span={8}>
+                        <Form.Item
+                            label="Total de páginas"
+                            name="numPag"
+                            rules={[{ required: true }]}
+                        >
+                            <InputNumber style={{ width: '100%' }} min={1} />
+                        </Form.Item>
+                    </Col>
+
+                    <Col span={8}>
+                        <Form.Item
+                            label="Páginas lidas"
+                            name="numPagRead"
+                            dependencies={["numPag"]}
+                            rules={[
+                                { required: true },
+                                ({ getFieldValue }) => ({
+                                    validator(_, value) {
+                                        if (!value || value <= getFieldValue("numPag")) {
+                                            return Promise.resolve();
+                                        }
+                                        return Promise.reject(
+                                            new Error("Não pode ser maior que o total")
+                                        );
+                                    },
+                                }),
                             ]}
-                        />
-                    </Form.Item>
+                        >
+                            <InputNumber style={{ width: '100%' }} min={0} />
+                        </Form.Item>
+                    </Col>
+                </Row>
 
-                    <Form.Item
-                        label="Total de páginas"
-                        name="numPag"
-                        rules={[{ required: true, message: 'Informe o total de páginas.' }]}
-                        style={{ minWidth: 170 }}
-                    >
-                        <InputNumber style={{ width: '100%' }} min={1} />
-                    </Form.Item>
+                {/* DATAS (ALINHADAS) */}
+                <Row gutter={12}>
+                    <Col span={12}>
+                        <Form.Item
+                            label="Data inicial"
+                            name="dtInicial"
+                        >
+                            <DatePicker
+                                format="DD/MM/YYYY"
+                                style={{ width: '100%' }}
+                            />
+                        </Form.Item>
+                    </Col>
 
-                    <Form.Item
-                        label="Páginas lidas"
-                        name="numPagRead"
-                        rules={[{ required: true, message: 'Informe as páginas lidas.' }]}
-                        style={{ minWidth: 170 }}
-                    >
-                        <InputNumber style={{ width: '100%' }} min={0} />
-                    </Form.Item>
-                </Space>
+                    <Col span={12}>
+                        <Form.Item shouldUpdate={(prev, curr) => prev.status !== curr.status}>
+                            {({ getFieldValue }) => (
+                                <Form.Item
+                                    label="Data final"
+                                    name="dtFinal"
+                                >
+                                    <DatePicker
+                                        disabled={getFieldValue("status") !== "Lido"}
+                                        format="DD/MM/YYYY"
+                                        style={{ width: '100%' }}
+                                    />
+                                </Form.Item>
+                            )}
+                        </Form.Item>
+                    </Col>
+                </Row>
 
-                <Space style={{ width: '100%' }} size={12} align="start" wrap>
-                    <Form.Item
-                        label="Data inicial"
-                        name="dtInicial"
-                        style={{ minWidth: 180 }}
-                    >
-                        <DatePicker format="DD/MM/YYYY" style={{ width: '100%' }} />
-                    </Form.Item>
-
-                    <Form.Item
-                        label="Data final"
-                        name="dtFinal"
-                        style={{ minWidth: 180 }}
-                    >
-                        <DatePicker format="DD/MM/YYYY" style={{ width: '100%' }} />
-                    </Form.Item>
-                </Space>
-
+                {/* IMAGEM */}
                 <Form.Item
                     label="Imagem da capa"
                     name="coverFileList"
                     valuePropName="fileList"
-                    getValueFromEvent={(event) => event?.fileList}
+                    getValueFromEvent={(e) =>
+                        Array.isArray(e) ? e : e?.fileList
+                    }
                 >
                     <Upload
                         beforeUpload={() => false}
                         accept="image/*"
                         maxCount={1}
+                        listType="picture"
                     >
                         <Button>Selecionar imagem</Button>
                     </Upload>
                 </Form.Item>
 
+                {/* DESCRIÇÃO */}
                 <Form.Item label="Descrição" name="text">
-                    <Input.TextArea rows={4} placeholder="Sinopse, observações etc." />
+                    <Input.TextArea rows={4} />
                 </Form.Item>
 
+                {/* BOTÕES */}
                 <Space style={{ width: '100%', justifyContent: 'flex-end' }}>
                     <Button onClick={onClose}>Cancelar</Button>
                     <Button type="primary" htmlType="submit" loading={submitting}>

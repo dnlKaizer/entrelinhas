@@ -1,10 +1,10 @@
-import AppAuth from "../components/auth/AppAuth"
+import AppBackground from "../components/AppBackground"
 import AppLoginForm from "../components/auth/AppLoginForm"
 
 function LoginPage() {
-    return <AppAuth>
+    return <AppBackground>
             <AppLoginForm />
-        </AppAuth>
+        </AppBackground>
 }
 
 export default LoginPage

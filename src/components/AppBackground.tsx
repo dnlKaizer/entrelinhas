@@ -3,25 +3,33 @@ import { Content } from "antd/es/layout/layout";
 import Title from "antd/es/typography/Title";
 import type { ReactNode } from "react";
 
-interface AppAuthProps {
+interface AppBackgroundProps {
     children: ReactNode
 }
 
-function AppAuth({ children }: AppAuthProps) {
+function AppBackground({ children }: AppBackgroundProps) {
     return <>
         <Layout
             style={{
-                height: '100vh',
-                width: '100vw',
+                minHeight: '100vh',
+                width: '100%',
                 background: 'linear-gradient(to top, #1c3055, #325da9)',
             }}
         >
-            <Content style={{ padding: 25, width: '100%', height: '100%' }}>
+            <Content
+                style={{
+                    padding: 25,
+                    boxSizing: 'border-box',
+                    width: '100%',
+                }}
+            >
                 <Flex
                     vertical
                     justify="center"
                     align="center"
-                    style={{ height: '100%' }}
+                    style={{
+                        minHeight: 'calc(100vh - 50px)', width: '100%'
+                    }}
                 >
                     <Title
                         level={1}
@@ -42,4 +50,4 @@ function AppAuth({ children }: AppAuthProps) {
     </>
 }
 
-export default AppAuth
+export default AppBackground

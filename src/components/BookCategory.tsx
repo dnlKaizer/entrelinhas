@@ -44,7 +44,7 @@ const BookCategory: React.FC<BookCategoryProps> = ({ category, backgroundColor, 
                     marginBottom: '10px',
                     marginTop: '0px',
                     userSelect: 'none',
-                    fontSize: '24px'
+                    fontSize: '25px'
                 }}
             >
                 {category}

@@ -1,10 +1,10 @@
 import { Spin } from "antd";
-import AppAuth from "../components/auth/AppAuth";
+import AppBackground from "../components/AppBackground";
 
 function LoadingPage() {
-    return <AppAuth>
+    return <AppBackground>
         <Spin />
-    </AppAuth>;
+    </AppBackground>;
 }
 
 export default LoadingPage;

@@ -47,7 +47,7 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
                     color: '#242424',
                     display: '-webkit-box',
                     fontFamily: '--apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
-                    fontSize: '16px',
+                    fontSize: '15px',
                     fontWeight: '300',
                     height: '2.5em',
                     lineHeight: '1.25em',
