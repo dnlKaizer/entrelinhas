@@ -4,6 +4,7 @@ import { useHomePage } from '../hooks/useHomePage';
 import BookCategory from '../components/BookCategory'
 import AppCreateBookModal from '../components/AppCreateBookModal';
 import { Loader } from '../components/Loader';
+import { InstallPrompt } from '../components/InstallPrompt';
 function HomePage() {
     const {
         loading,
@@ -58,6 +59,8 @@ function HomePage() {
                 submitting={isCreatingBook}
                 initialStatus={createModalStatus}
             />
+
+            <InstallPrompt />
         </Flex>
     );
 }
