@@ -13,7 +13,7 @@ precacheAndRoute(self.__WB_MANIFEST);
 
 // ─── Cache Dinâmico: Chamadas de API do Supabase ────────────
 registerRoute(
-    ({ url }) => url.href.match(/^https:\/\/.*\.supabase\.co\/.*/i),
+    ({ url, request }) => request.destination !== 'image' && !!url.href.match(/^https:\/\/.*\.supabase\.co\/.*/i),
     new NetworkFirst({
         cacheName: 'api-cache',
         plugins: [
@@ -34,9 +34,18 @@ registerRoute(
     new CacheFirst({
         cacheName: 'images-cache',
         plugins: [
+            {
+                // Limpa a URL antes de criar o tracking no Cache e no IndexedDB
+                cacheKeyWillBeUsed: async ({ request }) => {
+                    const url = new URL(request.url);
+                    url.search = ''; 
+                    return url.href; 
+                }
+            },
             new ExpirationPlugin({
                 maxEntries: 60,
                 maxAgeSeconds: 30 * 24 * 60 * 60, // 30 dias
+                purgeOnQuotaError: true, // Bonus stability
             }),
         ],
     })
