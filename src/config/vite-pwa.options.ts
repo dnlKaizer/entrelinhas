@@ -11,10 +11,12 @@ export const pwaOptions: Partial<VitePWAOptions> = {
     },
     // Removidos arquivos que não existem no seu public (favicon.ico, apple-touch, etc)
     manifest: {
+        id: '/',
+        start_url: '/',
         name: 'Entrelinhas',
         short_name: 'Entrelinhas',
         description: 'Aplicativo para amantes de livros acompanharem suas leituras',
-        theme_color: '#3f8fff',
+        theme_color: '#1a4889',
         background_color: '#ffffff',
         display: 'standalone',
         icons: [
