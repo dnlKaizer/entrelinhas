@@ -17,6 +17,7 @@ import { useAuthSession } from './hooks/useAuthSession'
 
 import DefaultLayout from './routes/layouts/DefaultLayout'
 import CleanLayout from './routes/layouts/CleanLayout'
+import { Offline } from './components/Offline'
 
 function App() {
   const { isAuthenticated, authLoading } = useAuthSession()
@@ -32,6 +33,7 @@ function App() {
         },
       }}
     >
+      <Offline />
       <BrowserRouter>
         <Routes>
 
