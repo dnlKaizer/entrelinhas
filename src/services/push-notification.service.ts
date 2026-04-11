@@ -18,7 +18,7 @@ class PushNotificationService {
             throw new Error('Subscription inválida para salvar no backend.');
         }
 
-        const { data, error } = await supabase.functions.invoke('save-subscription', {
+        const { error } = await supabase.functions.invoke('save-subscription', {
             body: {
                 endpoint,
                 keys: {
@@ -31,8 +31,6 @@ class PushNotificationService {
         if (error) {
             throw error;
         }
-
-        console.log('Subscription registrada com sucesso:', data);
     }
 
     async sendNotificationToAll(payload?: ISendNotificationPayload): Promise<void> {
@@ -45,15 +43,13 @@ class PushNotificationService {
                 description,
             };
 
-        const { data, error } = await supabase.functions.invoke('send-notification', {
+        const { error } = await supabase.functions.invoke('send-notification', {
             body,
         });
 
         if (error) {
             throw error;
         }
-
-        console.log('Notificação enviada com sucesso:', data);
     }
 }
 
