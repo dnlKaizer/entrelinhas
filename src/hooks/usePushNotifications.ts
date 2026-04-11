@@ -13,7 +13,7 @@ interface IUsePushNotificationsReturn {
     isLoading: boolean;
     error: string | null;
     subscribe: () => Promise<PushSubscription | null>;
-    sendNotificationToAll: (payload?: { title?: string; body?: string }) => Promise<void>;
+    sendNotificationToAll: (payload?: { title?: string; description?: string }) => Promise<void>;
     unsubscribe: () => Promise<void>;
 }
 
@@ -76,14 +76,14 @@ export function usePushNotifications(): IUsePushNotificationsReturn {
         }
     }, [isSupported]);
 
-    const sendNotificationToAll = useCallback(async (): Promise<void> => {
+    const sendNotificationToAll = useCallback(async (payload?: { title?: string; description?: string }): Promise<void> => {
         if (!isSupported) return;
 
         setIsLoading(true);
         setError(null);
 
         try {
-            await pushNotificationService.sendNotificationToAll();
+            await pushNotificationService.sendNotificationToAll(payload);
         } catch (err: unknown) {
             console.error('Erro ao enviar notificação:', err);
             setError('Falha ao enviar notificação.');

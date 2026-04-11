@@ -1,5 +1,5 @@
 import { BellOutlined } from '@ant-design/icons';
-import { Button, Dropdown, message } from 'antd';
+import { Button, Dropdown, Input, Modal, message } from 'antd';
 import type { MenuProps } from 'antd';
 import { useEffect, useMemo, useState } from 'react';
 import { authService } from '../services/auth.service';
@@ -19,6 +19,9 @@ export function PushNotification() {
     } = usePushNotifications();
     const [isAdmin, setIsAdmin] = useState(false);
     const [isLoadingRole, setIsLoadingRole] = useState(true);
+    const [isCustomModalOpen, setIsCustomModalOpen] = useState(false);
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
 
     useEffect(() => {
         let mounted = true;
@@ -74,6 +77,30 @@ export function PushNotification() {
         if (action === 'send-all') {
             await sendNotificationToAll();
             message.success('Notificação enviada para todos os usuários.');
+            return;
+        }
+
+        if (action === 'send-all-custom') {
+            setIsCustomModalOpen(true);
+        }
+    }
+
+    async function handleSendCustomNotification(): Promise<void> {
+        try {
+            await sendNotificationToAll({
+                title,
+                description,
+            });
+            message.success('Notificação enviada para todos os usuários.');
+            setIsCustomModalOpen(false);
+            setTitle('');
+            setDescription('');
+        } catch {
+            if (error) {
+                message.error(error);
+                return;
+            }
+            message.error('Não foi possível enviar a notificação personalizada.');
         }
     }
 
@@ -92,7 +119,8 @@ export function PushNotification() {
 
         if (isAdmin) {
             baseItems.push({ type: 'divider' });
-            baseItems.push({ key: 'send-all', label: 'Enviar notificação para todos' });
+            baseItems.push({ key: 'send-all', label: 'Enviar notificação genérica para todos' });
+            baseItems.push({ key: 'send-all-custom', label: 'Enviar com título e descrição' });
         }
 
         return baseItems;
@@ -101,34 +129,61 @@ export function PushNotification() {
     const disabled = isLoading || isLoadingRole;
 
     return (
-        <Dropdown
-            menu={{
-                items,
-                onClick: ({ key }) => {
-                    handleMenuClick(String(key)).catch(() => {
-                        if (error) {
-                            message.error(error);
-                            return;
-                        }
-                        message.error('Não foi possível concluir a ação de notificação.');
-                    });
-                },
-            }}
-            trigger={['click']}
-        >
-            <Button
-                icon={<BellOutlined />}
-                aria-label="Notificações"
-                loading={disabled}
-                style={{
-                    background: 'none',
-                    border: 'none',
-                    padding: 0,
-                    color: '#001010',
-                    cursor: 'pointer',
-                    fontSize: '24px',
+        <>
+            <Dropdown
+                menu={{
+                    items,
+                    onClick: ({ key }) => {
+                        handleMenuClick(String(key)).catch(() => {
+                            if (error) {
+                                message.error(error);
+                                return;
+                            }
+                            message.error('Não foi possível concluir a ação de notificação.');
+                        });
+                    },
                 }}
-            />
-        </Dropdown>
+                trigger={['click']}
+            >
+                <Button
+                    icon={<BellOutlined />}
+                    aria-label="Notificações"
+                    loading={disabled}
+                    style={{
+                        background: 'none',
+                        border: 'none',
+                        padding: 0,
+                        color: '#001010',
+                        cursor: 'pointer',
+                        fontSize: '24px',
+                    }}
+                />
+            </Dropdown>
+
+            <Modal
+                open={isCustomModalOpen}
+                title="Enviar notificação personalizada"
+                onCancel={() => setIsCustomModalOpen(false)}
+                onOk={handleSendCustomNotification}
+                okText="Enviar"
+                cancelText="Cancelar"
+                confirmLoading={isLoading}
+            >
+                <Input
+                    placeholder="Título (opcional)"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    maxLength={80}
+                    style={{ marginBottom: 12 }}
+                />
+                <Input.TextArea
+                    placeholder="Descrição (opcional)"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    maxLength={240}
+                    rows={4}
+                />
+            </Modal>
+        </>
     );
 }
