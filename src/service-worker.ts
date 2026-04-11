@@ -47,6 +47,9 @@ registerRoute(
                 maxAgeSeconds: 30 * 24 * 60 * 60, // 30 dias
                 purgeOnQuotaError: true, // Bonus stability
             }),
+            new CacheableResponsePlugin({
+                statuses: [0, 200],
+            }),
         ],
     })
 );
