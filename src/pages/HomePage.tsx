@@ -5,6 +5,7 @@ import BookCategory from '../components/BookCategory'
 import AppCreateBookModal from '../components/AppCreateBookModal';
 import { Loader } from '../components/Loader';
 import { InstallPrompt } from '../components/InstallPrompt';
+import { PushNotification } from '../components/PushNotification';
 function HomePage() {
     const {
         loading,
@@ -28,6 +29,10 @@ function HomePage() {
 
     return (
         <Flex vertical align='center' justify='center'>
+            <div style={{ width: '100%', maxWidth: '900px', marginBottom: '8px' }}>
+                <PushNotification />
+            </div>
+
             <BookCategory
                 category="Lendo"
                 backgroundColor="#d1e6fb"
