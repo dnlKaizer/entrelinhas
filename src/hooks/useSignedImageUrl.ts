@@ -12,6 +12,10 @@ interface SignedImageCacheEntry {
 const signedImageCache = new Map<string, SignedImageCacheEntry>();
 const inFlightSignedUrlRequests = new Map<string, Promise<string | null>>();
 
+function buildOfflinePath(bucket: string, path: string) {
+    return `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/sign/${bucket}/${path}`;
+}
+
 function createCacheKey(bucket: string, path: string) {
     return `${bucket}:${path}`;
 }
@@ -35,26 +39,33 @@ async function getOrCreateSignedUrl(cacheKey: string, bucket: string, path: stri
     const inFlightRequest = inFlightSignedUrlRequests.get(cacheKey);
     if (inFlightRequest) return inFlightRequest;
 
+    if (!navigator.onLine) {
+        return buildOfflinePath(bucket, path);
+    }
+
     const nextRequest = (async () => {
-        const { data, error } = await supabase
+        return await supabase
             .storage
             .from(bucket)
-            .createSignedUrl(path, expiresIn);
+            .createSignedUrl(path, expiresIn)
+            .then((data) => {
+                const now = Date.now();
+                const ttlInMs = Math.max(expiresIn, 1) * 1000;
+                if (!data.data) {
+                    return buildOfflinePath(bucket, path);
+                }
+                const signedUrl = data.data.signedUrl;
 
-        if (error || !data) {
-            console.error("Erro ao gerar URL assinada:", error);
-            return null;
-        }
+                signedImageCache.set(cacheKey, {
+                    signedUrl: signedUrl,
+                    expiresAt: now + ttlInMs,
+                });
 
-        const now = Date.now();
-        const ttlInMs = Math.max(expiresIn, 1) * 1000;
-
-        signedImageCache.set(cacheKey, {
-            signedUrl: data.signedUrl,
-            expiresAt: now + ttlInMs,
-        });
-
-        return data.signedUrl;
+                return signedUrl;
+            })
+            .catch(() => {
+                return buildOfflinePath(bucket, path);
+            });
     })().finally(() => {
         inFlightSignedUrlRequests.delete(cacheKey);
     });
