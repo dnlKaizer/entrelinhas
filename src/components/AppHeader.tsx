@@ -1,9 +1,10 @@
 import { Header } from "antd/es/layout/layout"
 import Title from "antd/es/typography/Title"
-import { Button, message } from "antd"
+import { Button, Space, message } from "antd"
 import { useState } from "react"
 import { authService } from "../services/auth.service"
 import { LogoutOutlined } from "@ant-design/icons"
+import { PushNotification } from "./PushNotification"
 
 function AppHeader() {
     const [logoutLoading, setLogoutLoading] = useState(false)
@@ -33,7 +34,7 @@ function AppHeader() {
         >
             <Title
                 level={4}
-                style={{ 
+                style={{
                     color: '#001010',
                     margin: 0,
                     fontFamily: 'Lobster, cursive',
@@ -41,25 +42,28 @@ function AppHeader() {
                     fontWeight: 'normal',
                     userSelect: 'none'
                 }}
-                    >
+            >
                 EntreLinhas
             </Title>
 
-            <Button
-                onClick={handleLogout}
-                loading={logoutLoading}
-                icon={<LogoutOutlined />}
-                aria-label="Sair"
-                style={{
-                    background: 'none',
-                    border: 'none',
-                    padding: 0,
-                    color: '#001010',
-                    cursor: 'pointer',
-                    fontSize: '24px',
-                }}
-            >
-            </Button>   
+            <Space size="middle">
+                <PushNotification />
+
+                <Button
+                    onClick={handleLogout}
+                    loading={logoutLoading}
+                    icon={<LogoutOutlined />}
+                    aria-label="Sair"
+                    style={{
+                        background: 'none',
+                        border: 'none',
+                        padding: 0,
+                        color: '#001010',
+                        cursor: 'pointer',
+                        fontSize: '24px',
+                    }}
+                />
+            </Space>
         </Header>
     )
 }

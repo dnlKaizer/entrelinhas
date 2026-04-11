@@ -7,6 +7,14 @@ import { CacheableResponsePlugin } from 'workbox-cacheable-response';
 
 declare const self: any;
 
+type PushPayload = {
+    title?: string;
+    body?: string;
+    icon?: string;
+    badge?: string;
+    url?: string;
+};
+
 clientsClaim();
 // Precache dos arquivos estáticos (HTML, CSS, JS gerados no build)
 precacheAndRoute(self.__WB_MANIFEST);
@@ -38,8 +46,8 @@ registerRoute(
                 // Limpa a URL antes de criar o tracking no Cache e no IndexedDB
                 cacheKeyWillBeUsed: async ({ request }) => {
                     const url = new URL(request.url);
-                    url.search = ''; 
-                    return url.href; 
+                    url.search = '';
+                    return url.href;
                 }
             },
             new ExpirationPlugin({
@@ -53,3 +61,51 @@ registerRoute(
         ],
     })
 );
+
+// ─── Push handler ───────────────────────────────────────────
+self.addEventListener('push', (event: any) => {
+    const fallbackData = {
+        title: 'Nova notificação',
+        body: 'Você tem uma nova mensagem.',
+        icon: '/launcher-icon-192x192.png',
+    };
+
+    let data: PushPayload = fallbackData;
+
+    if (event.data) {
+        try {
+            data = event.data.json();
+        } catch {
+            data = {
+                ...fallbackData,
+                body: event.data.text() || fallbackData.body,
+            };
+        }
+    }
+
+    event.waitUntil(
+        self.registration.showNotification(data.title || fallbackData.title, {
+            body: data.body || fallbackData.body,
+            icon: data.icon ?? fallbackData.icon,
+            badge: data.badge ?? '/badge-72x72.png',
+            data: data.url ? { url: data.url } : undefined,
+        })
+    );
+});
+
+// ─── Clique na notificação ──────────────────────────────────
+self.addEventListener('notificationclick', (event: any) => {
+    event.notification.close();
+
+    const url = event.notification.data?.url ?? '/';
+
+    event.waitUntil(
+        self.clients
+            .matchAll({ type: 'window', includeUncontrolled: true })
+            .then((clients: any) => {
+                const existing = clients.find((c: any) => c.url === url && 'focus' in c);
+                if (existing) return existing.focus();
+                return self.clients.openWindow(url);
+            })
+    );
+});
