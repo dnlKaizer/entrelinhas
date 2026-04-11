@@ -13,7 +13,7 @@ interface IUsePushNotificationsReturn {
     isLoading: boolean;
     error: string | null;
     subscribe: () => Promise<PushSubscription | null>;
-    sendTestNotification: () => Promise<void>;
+    sendNotificationToAll: (payload?: { title?: string; body?: string }) => Promise<void>;
     unsubscribe: () => Promise<void>;
 }
 
@@ -76,23 +76,21 @@ export function usePushNotifications(): IUsePushNotificationsReturn {
         }
     }, [isSupported]);
 
-    const sendTestNotification = useCallback(async (): Promise<void> => {
-        if (!isSupported || !subscription) return;
+    const sendNotificationToAll = useCallback(async (): Promise<void> => {
+        if (!isSupported) return;
 
         setIsLoading(true);
         setError(null);
 
         try {
-            await pushNotificationService.sendTestNotification({
-                subscription: subscription.toJSON(),
-            });
+            await pushNotificationService.sendNotificationToAll();
         } catch (err: unknown) {
-            console.error('Erro ao enviar notificação de teste:', err);
-            setError('Falha ao enviar notificação de teste.');
+            console.error('Erro ao enviar notificação:', err);
+            setError('Falha ao enviar notificação.');
         } finally {
             setIsLoading(false);
         }
-    }, [isSupported, subscription]);
+    }, [isSupported]);
 
     const unsubscribe = useCallback(async (): Promise<void> => {
         if (!isSupported) return;
@@ -118,7 +116,7 @@ export function usePushNotifications(): IUsePushNotificationsReturn {
         isLoading,
         error,
         subscribe,
-        sendTestNotification,
+        sendNotificationToAll,
         unsubscribe,
     };
 }

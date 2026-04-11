@@ -4,10 +4,6 @@ interface IRegisterPushSubscriptionPayload {
     subscription: PushSubscriptionJSON;
 }
 
-interface ISendTestNotificationPayload {
-    subscription: PushSubscriptionJSON;
-}
-
 class PushNotificationService {
     async registerSubscription(payload: IRegisterPushSubscriptionPayload): Promise<void> {
         const endpoint = payload.subscription.endpoint;
@@ -34,11 +30,9 @@ class PushNotificationService {
         console.log('Subscription registrada com sucesso:', data);
     }
 
-    async sendTestNotification(payload: ISendTestNotificationPayload): Promise<void> {
+    async sendNotificationToAll(): Promise<void> {
         const { data, error } = await supabase.functions.invoke('send-notification', {
-            body: {
-                subscription: payload.subscription,
-            },
+            body: {},
         });
 
         if (error) {
