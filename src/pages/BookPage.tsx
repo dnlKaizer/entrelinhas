@@ -1,42 +1,56 @@
-import { Card, Typography, Button, Space, Divider, Progress, Tag, Result, Flex, message } from "antd";
-import { BookOutlined, CalendarOutlined, ShareAltOutlined } from "@ant-design/icons";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import {
+    Card,
+    Typography,
+    Button,
+    Space,
+    Divider,
+    Progress,
+    Tag,
+    Result,
+    Flex,
+    Popconfirm
+} from "antd";
+
+import {
+    BookOutlined,
+    CalendarOutlined,
+    DeleteOutlined,
+    EditOutlined,
+    HistoryOutlined,
+    ShareAltOutlined,
+    TrophyOutlined
+} from "@ant-design/icons";
+
 import { InfoItem } from "../components/InfoItem";
 import { BackButton } from "../components/BackButton";
 import { formatDate } from "../utils/formatDate";
-import { useEffect, useState } from "react";
-import { useBookById } from "../providers/BookProvider";
-import { useSignedImageUrl } from "../hooks/useSignedImageUrl";
-import { useShareBook } from "../hooks/useShareBook";
 import AppBackground from "../components/AppBackground";
+import { useBookPage } from "../hooks/useBookPage";
+import AppCreateBookModal from "../components/AppCreateBookModal";
+import dayjs from "dayjs";
 
 const { Title, Text, Paragraph } = Typography;
 
 export function BookPage() {
-    const { id } = useParams();
     const navigate = useNavigate();
-    const book = useBookById(Number(id));
-    const [count, setCount] = useState(5);
-    const [shareLoading, setShareLoading] = useState(false);
-    const { isSupported, shareBook } = useShareBook();
+    
+    const {
+        book,
+        count,
+        isEditModalOpen,
+        isUpdating,
+        isDeleting,
+        imageUrl,
+        openEditModal,
+        closeEditModal,
+        handleUpdateBook,
+        handleDeleteBook,
+        handleShare,
+        shareLoading
+    } = useBookPage();
 
-    useEffect(() => {
-        if (!book) {
-            const interval = setInterval(() => {
-                setCount((c) => (c > 0 ? c - 1 : 0));
-            }, 1000);
-
-            const timer = setTimeout(() => {
-                navigate("/");
-            }, 5000);
-
-            return () => {
-                clearInterval(interval);
-                clearTimeout(timer);
-            };
-        }
-    }, [book, navigate]);
-
+    // Não encontrado
     if (!book) {
         return (
             <Result
@@ -52,42 +66,15 @@ export function BookPage() {
         );
     }
 
-    const imageUrl = useSignedImageUrl({ path: book.img, bucket: "covers" });
     const progress = Math.round(
         (book.numPagRead / book.numPag) * 100
     );
 
-    const handleShare = async () => {
-        if (!isSupported) {
-            message.warning("Seu dispositivo não suporta compartilhamento nativo.");
-            return;
-        }
-
-        setShareLoading(true);
-
-        const result = await shareBook(book, window.location.href, imageUrl);
-
-        if (result.status === "shared") {
-            message.success("Livro compartilhado com sucesso.");
-        } else if (result.status === "unsupported") {
-            message.warning("Seu dispositivo não suporta compartilhamento nativo.");
-        } else if (result.status === "error") {
-            message.error("Não foi possível compartilhar este livro.");
-            console.error("Erro ao compartilhar livro:", result.error);
-        }
-
-        setShareLoading(false);
-    };
-
     return (
         <AppBackground>
-            <Flex
-                vertical
-                justify="center"
-                align="center"
-                style={{ width: "100%" }}
-            >
+            <Flex vertical justify="center" align="center" style={{ width: "100%" }}>
                 <BackButton />
+
                 <Card
                     style={{
                         maxWidth: 400,
@@ -112,11 +99,7 @@ export function BookPage() {
                     </div>
 
                     {/* TÍTULO */}
-                    <div style={{
-                        textAlign: 'center',
-                        alignItems: 'center',
-                        marginTop: 15
-                    }}>
+                    <div style={{ textAlign: "center", marginTop: 15 }}>
                         <Title level={4} style={{ marginBottom: 0 }}>
                             {book.nome}
                         </Title>
@@ -127,32 +110,26 @@ export function BookPage() {
                     </div>
 
                     {/* STATUS */}
-                    <div style={{
-                        textAlign: 'center',
-                        alignItems: 'center',
-                        marginTop: 10
-                    }}>
-                        <Tag color={
-                            book.status === "Lido"
-                                ? "red"
-                                : book.status === "Lendo"
-                                    ? "blue"
-                                    : "gold"
-                        }>
+                    <div style={{ textAlign: "center", marginTop: 10 }}>
+                        <Tag
+                            color={
+                                book.status === "Lido"
+                                    ? "red"
+                                    : book.status === "Lendo"
+                                        ? "blue"
+                                        : "gold"
+                            }
+                        >
                             {book.status}
                         </Tag>
                     </div>
 
                     {/* PROGRESSO */}
                     <div style={{ marginTop: 10 }}>
-                        <Progress
-                            percent={progress}
-                            strokeColor="#1890ff"
-                            railColor="#e6f7ff"
-                        />
-                        <Text type="secondary">
+                        <Progress percent={progress} />
+                        {/* <Text type="secondary">
                             {book.numPagRead} / {book.numPag} páginas
-                        </Text>
+                        </Text> */}
                     </div>
 
                     {/* INFO */}
@@ -168,8 +145,21 @@ export function BookPage() {
                             {book.dtInicial && (
                                 <InfoItem
                                     icon={<CalendarOutlined />}
-                                    tooltip="Data de início da leitura">
+                                    tooltip="Data de início da leitura"
+                                >
                                     {formatDate(book.dtInicial)}
+                                </InfoItem>
+                            )}
+
+                            {book?.ano && (
+                                <InfoItem icon={<HistoryOutlined />} tooltip="Ano de publicação">
+                                    {book.ano}
+                                </InfoItem>
+                            )}
+
+                            {book?.dtFinal && (
+                                <InfoItem icon={<TrophyOutlined />} tooltip="Data de término da leitura">
+                                    {formatDate(book.dtFinal)}
                                 </InfoItem>
                             )}
                         </Space>
@@ -178,25 +168,39 @@ export function BookPage() {
                     <Divider />
 
                     {/* DESCRIÇÃO */}
-                    <Paragraph
-                        ellipsis={{ rows: 5, expandable: true, symbol: "ver mais..." }}
-                    >
+                    <Paragraph ellipsis={{ rows: 5, expandable: true, symbol: "ver mais..." }}>
                         {book.text || "Sem descrição disponível."}
                     </Paragraph>
 
                     <Space direction="vertical" style={{ width: "100%" }}>
-                        {/* BOTÃO */}
-                        <Button
-                            type="primary"
-                            block
-                            style={{ borderRadius: 10 }}
-                        >
-                            {book.status === "Lendo"
-                                ? "Continuar leitura"
-                                : book.status === "Lido"
-                                    ? "Ler novamente"
-                                    : "Iniciar leitura"}
-                        </Button>
+                        {/* AÇÕES */}
+                        <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+                            <Button
+                                type="primary"
+                                icon={<EditOutlined />}
+                                style={{ flex: 1, borderRadius: 10 }}
+                                onClick={openEditModal}
+                            >
+                                Editar
+                            </Button>
+
+                            <Popconfirm
+                                title="Excluir livro"
+                                description="Tem certeza que deseja excluir este livro?"
+                                onConfirm={handleDeleteBook}
+                                okText="Sim"
+                                cancelText="Cancelar"
+                            >
+                                <Button
+                                    danger
+                                    loading={isDeleting}
+                                    icon={<DeleteOutlined />}
+                                    style={{ flex: 1, borderRadius: 10 }}
+                                >
+                                    Excluir
+                                </Button>
+                            </Popconfirm>
+                        </div>
 
                         <Button
                             icon={<ShareAltOutlined />}
@@ -210,6 +214,25 @@ export function BookPage() {
                     </Space>
                 </Card>
             </Flex>
+
+            {/* MODAL DE EDIÇÃO */}
+            <AppCreateBookModal
+                open={isEditModalOpen}
+                onClose={closeEditModal}
+                onSubmit={handleUpdateBook}
+                submitting={isUpdating}
+                initialValues={{
+                    nome: book.nome,
+                    autor: book.autor,
+                    ano: book.ano,
+                    status: book.status,
+                    numPag: book.numPag,
+                    numPagRead: book.numPagRead,
+                    text: book.text,
+                    dtInicial: book.dtInicial ? dayjs(book.dtInicial) : undefined,
+                    dtFinal: book.dtFinal ? dayjs(book.dtFinal) : undefined,
+                }}
+            />
         </AppBackground>
     );
 }
