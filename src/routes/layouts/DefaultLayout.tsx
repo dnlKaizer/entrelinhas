@@ -4,11 +4,15 @@ import { Content } from "antd/es/layout/layout";
 import AppHeader from "../../components/AppHeader";
 import { Layout } from "antd";
 
-function DefaultLayout() {
+interface DefaultLayoutProps {
+    isAdmin: boolean;
+}
+
+function DefaultLayout({ isAdmin }: DefaultLayoutProps) {
     return (
         <Layout style={{ minHeight: '100vh' }}>
-            <AppHeader />
-            <Content style={{ backgroundColor: '#fafafa', padding: 25, marginBottom: '70px' }}>
+            <AppHeader isAdmin={isAdmin} />
+            <Content style={{ backgroundColor: '#f0f5ff', padding: 25, marginBottom: '61px' }}>
                 <Outlet />
             </Content>
             <AppFooter />

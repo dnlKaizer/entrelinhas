@@ -31,7 +31,7 @@ function HomePage() {
         <Flex vertical align='center' justify='center'>
             <BookCategory
                 category="Lendo"
-                backgroundColor="#d1e6fb"
+                backgroundColor="#a2d1ff"
                 books={lendo}
                 emptyMessage="Adicione aqui o livro que você está lendo"
                 onAddBook={handleOpenCreateModal}
@@ -39,7 +39,7 @@ function HomePage() {
 
             <BookCategory
                 category="Desejado"
-                backgroundColor="#fff8cd"
+                backgroundColor="#fff2a1"
                 books={desejado}
                 emptyMessage="Adicione aqui o livro que você quer ler"
                 onAddBook={handleOpenCreateModal}
@@ -47,7 +47,7 @@ function HomePage() {
 
             <BookCategory
                 category="Lido"
-                backgroundColor="#ffd7d7"
+                backgroundColor="#ffacac"
                 books={lido}
                 emptyMessage="Adicione aqui o livro que você já leu"
                 onAddBook={handleOpenCreateModal}

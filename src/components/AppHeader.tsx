@@ -6,7 +6,11 @@ import { authService } from "../services/auth.service"
 import { LogoutOutlined } from "@ant-design/icons"
 import { PushNotification } from "./PushNotification"
 
-function AppHeader() {
+interface AppHeaderProps {
+    isAdmin: boolean
+}
+
+function AppHeader({ isAdmin }: AppHeaderProps) {
     const [logoutLoading, setLogoutLoading] = useState(false)
 
     async function handleLogout() {
@@ -47,7 +51,7 @@ function AppHeader() {
             </Title>
 
             <Space size="middle">
-                <PushNotification />
+                <PushNotification isAdmin={isAdmin} />
 
                 <Button
                     onClick={handleLogout}

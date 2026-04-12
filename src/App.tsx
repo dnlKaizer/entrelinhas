@@ -20,7 +20,7 @@ import CleanLayout from './routes/layouts/CleanLayout'
 import { Offline } from './components/Offline'
 
 function App() {
-  const { isAuthenticated, authLoading } = useAuthSession()
+  const { isAuthenticated, isAdmin, authLoading } = useAuthSession()
 
   if (authLoading) return <LoadingPage />
 
@@ -38,7 +38,7 @@ function App() {
         <Routes>
 
           {/* HOME (layout padrão) */}
-          <Route element={<DefaultLayout />}>
+          <Route element={<DefaultLayout isAdmin={isAdmin} />}>
             <Route element={<ProtectedRoute isAuthenticated={isAuthenticated} />}>
               <Route path="/" element={<HomePage />} />
             </Route>

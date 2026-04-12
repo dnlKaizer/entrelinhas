@@ -33,6 +33,7 @@ const BookCategory: React.FC<BookCategoryProps> = ({ category, backgroundColor, 
                 padding: '20px',
                 width: '100%',
                 maxWidth: '700px',
+                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.2)'
             }}
         >
             <Title
@@ -117,7 +118,8 @@ const BookCategory: React.FC<BookCategoryProps> = ({ category, backgroundColor, 
                             type="secondary"
                             style={{
                                 fontSize: '15px',
-                                fontWeight: 500
+                                fontWeight: 500,
+                                color: '#535353',
                             }}
                         >
                             {books.length} {books.length === 1 ? 'livro' : 'livros'}

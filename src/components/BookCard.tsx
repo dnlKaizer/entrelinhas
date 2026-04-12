@@ -48,7 +48,7 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
                     display: '-webkit-box',
                     fontFamily: '--apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
                     fontSize: '15px',
-                    fontWeight: '300',
+                    fontWeight: '400',
                     height: '2.5em',
                     lineHeight: '1.25em',
                     overflow: 'hidden',
@@ -64,7 +64,8 @@ const BookCard: React.FC<BookCardProps> = ({ book }) => {
             <Text
                 type="secondary"
                 style={{
-                    fontSize: '12px',
+                    fontSize: '14px',
+                    color: '#535353',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
                     userSelect: 'none',

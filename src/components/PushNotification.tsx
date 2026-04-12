@@ -1,12 +1,14 @@
 import { BellOutlined } from '@ant-design/icons';
 import { Button, Dropdown, Input, Modal, message } from 'antd';
 import type { MenuProps } from 'antd';
-import { useEffect, useMemo, useState } from 'react';
-import { authService } from '../services/auth.service';
-import { supabase } from '../services/supabase.client';
+import { useMemo, useState } from 'react';
 import { usePushNotifications } from '../hooks/usePushNotifications';
 
-export function PushNotification() {
+interface PushNotificationProps {
+    isAdmin: boolean;
+}
+
+export function PushNotification({ isAdmin }: PushNotificationProps) {
     const {
         isSupported,
         permission,
@@ -17,49 +19,9 @@ export function PushNotification() {
         sendNotificationToAll,
         unsubscribe,
     } = usePushNotifications();
-    const [isAdmin, setIsAdmin] = useState(false);
-    const [isLoadingRole, setIsLoadingRole] = useState(true);
     const [isCustomModalOpen, setIsCustomModalOpen] = useState(false);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-
-    useEffect(() => {
-        let mounted = true;
-
-        async function loadRole() {
-            try {
-                const { user } = await authService.getCurrentUser();
-
-                if (!user) {
-                    if (mounted) setIsAdmin(false);
-                    return;
-                }
-
-                const { data, error: profileError } = await supabase
-                    .from('profile')
-                    .select('is_admin')
-                    .eq('id', user.id)
-                    .maybeSingle();
-
-                if (profileError) throw profileError;
-
-                if (mounted) setIsAdmin(!!data?.is_admin);
-            } catch (err) {
-                console.error('Erro ao carregar perfil para notificações:', err);
-                if (mounted) {
-                    message.error('Não foi possível verificar permissões de notificação.');
-                }
-            } finally {
-                if (mounted) setIsLoadingRole(false);
-            }
-        }
-
-        loadRole();
-
-        return () => {
-            mounted = false;
-        };
-    }, []);
 
     async function handleMenuClick(action: string): Promise<void> {
         if (action === 'subscribe') {
@@ -126,7 +88,7 @@ export function PushNotification() {
         return baseItems;
     }, [isAdmin, isSupported, permission, subscription]);
 
-    const disabled = isLoading || isLoadingRole;
+    const disabled = isLoading;
 
     return (
         <>
@@ -148,7 +110,7 @@ export function PushNotification() {
                 <Button
                     icon={<BellOutlined />}
                     aria-label="Notificações"
-                    loading={disabled}
+                    disabled={disabled}
                     style={{
                         background: 'none',
                         border: 'none',
