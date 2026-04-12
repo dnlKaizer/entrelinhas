@@ -1,0 +1,138 @@
+import { Flex, Typography } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
+
+
+import type { IBook, TStatus } from "../types/book.type";
+
+import BookCard from "./BookCard";
+import { AddButton } from "./AddButton";
+
+const { Text, Title } = Typography;
+
+interface BookCategoryProps {
+    category: TStatus;
+    backgroundColor: string;
+    books: IBook[];
+    emptyMessage: string;
+    onAddBook?: (status: TStatus) => void;
+}
+
+const BookCategory: React.FC<BookCategoryProps> = ({ category, backgroundColor, books, emptyMessage, onAddBook }) => {
+    const isEmpty = books.length === 0;
+
+    return (
+        <div
+            style={{
+                alignItems: 'center',
+                backgroundColor,
+                borderRadius: '15px',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                marginBottom: '20px',
+                minHeight: '150px',
+                padding: '20px',
+                width: '100%',
+                maxWidth: '700px',
+                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.2)'
+            }}
+        >
+            <Title
+                level={5}
+                style={{
+                    color: '#001010',
+                    fontFamily: 'Lobster, cursive',
+                    fontWeight: '300',
+                    marginBottom: '10px',
+                    marginTop: '0px',
+                    userSelect: 'none',
+                    fontSize: '25px'
+                }}
+            >
+                {category}
+            </Title>
+            {isEmpty ? (
+                <Flex
+                    className="empty-box"
+                    align="center"
+                    gap="large"
+                    onClick={() => onAddBook?.(category)}
+                    style={{
+                        borderRadius: '10px',
+                        flexDirection: 'column',
+                        padding: '20px'
+                    }}
+                >
+                    <div
+                        style={{
+                            alignContent: 'center',
+                            backgroundColor: '#ffffff',
+                            border: "2.5px solid #00000040",
+                            borderRadius: '50%',
+                            color: '#000000',
+                            fontSize: '25px',
+                            height: '60px',
+                            padding: '0px',
+                            textAlign: 'center',
+                            width: '60px'
+                        }}
+                    >
+                        <PlusOutlined style={{ color: '#001010', fontSize: '25px' }} />
+                    </div>
+                    <Text
+                        style={{
+                            userSelect: 'none'
+                        }}>{emptyMessage}</Text>
+                </Flex>
+            ) : (
+                <>
+                    <div
+                        style={{
+                            width: '100%',
+                            display: 'flex',
+                            flexDirection: 'row',
+                            overflowX: 'auto',
+                            gap: '16px',
+                            padding: '20px',
+                            scrollBehavior: 'smooth',
+                            alignItems: 'center'
+                        }}
+                        className="custom-scroll"
+                    >
+                        {books.map((book) => (
+                            <div key={book.idLivro} style={{ flex: '0 0 auto' }}>
+                                <BookCard book={book} />
+                            </div>
+                        ))}
+                    </div>
+
+                    <Flex
+                        align="center"
+                        justify="space-between"
+                        style={{
+                            marginTop: 'auto',
+                            paddingTop: '10px',
+                            width: '100%'
+                        }}
+                    >
+                        <Text
+                            type="secondary"
+                            style={{
+                                fontSize: '15px',
+                                fontWeight: 500,
+                                color: '#535353',
+                            }}
+                        >
+                            {books.length} {books.length === 1 ? 'livro' : 'livros'}
+                        </Text>
+
+                        <AddButton tooltip={`Adicionar livro em "${category}"`} action={onAddBook} category={category} />
+                    </Flex>
+                </>
+            )
+            }
+        </div >
+    );
+};
+
+export default BookCategory;
