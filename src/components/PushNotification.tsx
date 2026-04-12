@@ -6,6 +6,50 @@ import { authService } from '../services/auth.service';
 import { supabase } from '../services/supabase.client';
 import { usePushNotifications } from '../hooks/usePushNotifications';
 
+const ADMIN_ROLE_CACHE_KEY_PREFIX = 'push-notification-admin-role:';
+const ADMIN_ROLE_CACHE_TTL_MS = 10 * 60 * 1000;
+
+interface IAdminRoleCacheEntry {
+    isAdmin: boolean;
+    cachedAt: number;
+}
+
+function getAdminRoleCacheKey(userId: string): string {
+    return `${ADMIN_ROLE_CACHE_KEY_PREFIX}${userId}`;
+}
+
+function readCachedAdminRole(userId: string): boolean | null {
+    try {
+        const raw = sessionStorage.getItem(getAdminRoleCacheKey(userId));
+        if (!raw) return null;
+
+        const parsed = JSON.parse(raw) as IAdminRoleCacheEntry;
+        const isExpired = Date.now() - parsed.cachedAt > ADMIN_ROLE_CACHE_TTL_MS;
+
+        if (isExpired || typeof parsed.isAdmin !== 'boolean') {
+            sessionStorage.removeItem(getAdminRoleCacheKey(userId));
+            return null;
+        }
+
+        return parsed.isAdmin;
+    } catch {
+        return null;
+    }
+}
+
+function writeCachedAdminRole(userId: string, isAdmin: boolean): void {
+    try {
+        const cacheEntry: IAdminRoleCacheEntry = {
+            isAdmin,
+            cachedAt: Date.now(),
+        };
+
+        sessionStorage.setItem(getAdminRoleCacheKey(userId), JSON.stringify(cacheEntry));
+    } catch {
+        // Ignore cache write failures (private mode, quota, etc.).
+    }
+}
+
 export function PushNotification() {
     const {
         isSupported,
@@ -18,7 +62,6 @@ export function PushNotification() {
         unsubscribe,
     } = usePushNotifications();
     const [isAdmin, setIsAdmin] = useState(false);
-    const [isLoadingRole, setIsLoadingRole] = useState(true);
     const [isCustomModalOpen, setIsCustomModalOpen] = useState(false);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
@@ -35,6 +78,12 @@ export function PushNotification() {
                     return;
                 }
 
+                const cachedIsAdmin = readCachedAdminRole(user.id);
+                if (cachedIsAdmin !== null) {
+                    if (mounted) setIsAdmin(cachedIsAdmin);
+                    return;
+                }
+
                 const { data, error: profileError } = await supabase
                     .from('profile')
                     .select('is_admin')
@@ -43,14 +92,15 @@ export function PushNotification() {
 
                 if (profileError) throw profileError;
 
-                if (mounted) setIsAdmin(!!data?.is_admin);
+                const isAdminFromApi = !!data?.is_admin;
+                writeCachedAdminRole(user.id, isAdminFromApi);
+
+                if (mounted) setIsAdmin(isAdminFromApi);
             } catch (err) {
                 console.error('Erro ao carregar perfil para notificações:', err);
                 if (mounted) {
                     message.error('Não foi possível verificar permissões de notificação.');
                 }
-            } finally {
-                if (mounted) setIsLoadingRole(false);
             }
         }
 
@@ -126,7 +176,7 @@ export function PushNotification() {
         return baseItems;
     }, [isAdmin, isSupported, permission, subscription]);
 
-    const disabled = isLoading || isLoadingRole;
+    const disabled = isLoading;
 
     return (
         <>
@@ -148,7 +198,7 @@ export function PushNotification() {
                 <Button
                     icon={<BellOutlined />}
                     aria-label="Notificações"
-                    loading={disabled}
+                    disabled={disabled}
                     style={{
                         background: 'none',
                         border: 'none',
