@@ -1,5 +1,5 @@
 import { Layout, Flex, Button } from 'antd';
-import { HomeOutlined, DesktopOutlined } from '@ant-design/icons';
+import { HomeOutlined } from '@ant-design/icons';
 
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -45,25 +45,6 @@ function AppFooter() {
                         type={isActive('/') ? "primary" : "default"}
                         style={{
                             backgroundColor: isActive('/') ? '#0073c0f0' : '#888888f0',
-                        }}
-                    />
-                </nav>
-
-                <nav
-                    className='nav-button'
-                    style={{
-                        position: 'relative',
-                        textAlign: 'center',
-                        transition: '0.2s'
-                    }}
-                >
-                    <Button
-                        icon={<DesktopOutlined />}
-                        onClick={() => handleNavigation('/')}
-                        shape="circle"
-                        type={isActive('/') ? "primary" : "default"}
-                        style={{
-                            backgroundColor: isActive('/narnia') ? '#0073c0f0' : '#888888f0',
                         }}
                     />
                 </nav>
