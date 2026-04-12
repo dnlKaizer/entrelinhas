@@ -158,8 +158,8 @@ function AppCreateBookModal({
             onCancel={onClose}
             title={initialValues ? "Editar livro" : "Cadastrar livro"}
             width="90%"
-            style={{ maxWidth: 700 }}
-            styles={{ body: { padding: 15 } }}
+            style={{ maxWidth: 700, top: 16, marginBottom: 16 }}
+            styles={{ body: { padding: 15, maxHeight: 'calc(100vh - 180px)', overflowY: 'auto' } }}
             footer={null}
             destroyOnHidden
         >
