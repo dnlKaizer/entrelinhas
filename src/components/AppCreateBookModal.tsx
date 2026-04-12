@@ -157,7 +157,9 @@ function AppCreateBookModal({
             open={open}
             onCancel={onClose}
             title={initialValues ? "Editar livro" : "Cadastrar livro"}
-            width={760}
+            width="90%"
+            style={{ maxWidth: 700 }}
+            styles={{ body: { padding: 15 } }}
             footer={null}
             destroyOnHidden
         >
@@ -177,13 +179,13 @@ function AppCreateBookModal({
 
                 {/* AUTOR + ANO */}
                 <Row gutter={12}>
-                    <Col span={16}>
+                    <Col xs={24} sm={16}>
                         <Form.Item label="Autor" name="autor">
                             <Input placeholder="Ex.: J.R.R. Tolkien" />
                         </Form.Item>
                     </Col>
 
-                    <Col span={8}>
+                    <Col xs={24} sm={8}>
                         <Form.Item label="Ano" name="ano">
                             <InputNumber style={{ width: '100%' }} min={0} max={9999} />
                         </Form.Item>
@@ -192,7 +194,7 @@ function AppCreateBookModal({
 
                 {/* STATUS + PAGINAS */}
                 <Row gutter={12}>
-                    <Col span={8}>
+                    <Col xs={24} sm={8}>
                         <Form.Item
                             label="Status"
                             name="status"
@@ -208,7 +210,7 @@ function AppCreateBookModal({
                         </Form.Item>
                     </Col>
 
-                    <Col span={8}>
+                    <Col xs={24} sm={8}>
                         <Form.Item
                             label="Total de páginas"
                             name="numPag"
@@ -218,7 +220,7 @@ function AppCreateBookModal({
                         </Form.Item>
                     </Col>
 
-                    <Col span={8}>
+                    <Col xs={24} sm={8}>
                         <Form.Item
                             label="Páginas lidas"
                             name="numPagRead"
@@ -244,7 +246,7 @@ function AppCreateBookModal({
 
                 {/* DATAS (ALINHADAS) */}
                 <Row gutter={12}>
-                    <Col span={12}>
+                    <Col xs={24} sm={12}>
                         <Form.Item
                             label="Data inicial"
                             name="dtInicial"
@@ -256,7 +258,7 @@ function AppCreateBookModal({
                         </Form.Item>
                     </Col>
 
-                    <Col span={12}>
+                    <Col xs={24} sm={12}>
                         <Form.Item shouldUpdate={(prev, curr) => prev.status !== curr.status}>
                             {({ getFieldValue }) => (
                                 <Form.Item
@@ -279,7 +281,7 @@ function AppCreateBookModal({
                     label="Imagem da capa"
                 >
                     <div>
-                        <Space>
+                        <Space wrap>
                             <Upload
                                 beforeUpload={() => false}
                                 accept="image/*"

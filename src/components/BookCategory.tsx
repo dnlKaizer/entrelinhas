@@ -5,6 +5,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import type { IBook, TStatus } from "../types/book.type";
 
 import BookCard from "./BookCard";
+import { AddButton } from "./AddButton";
 
 const { Text, Title } = Typography;
 
@@ -125,16 +126,7 @@ const BookCategory: React.FC<BookCategoryProps> = ({ category, backgroundColor, 
                             {books.length} {books.length === 1 ? 'livro' : 'livros'}
                         </Text>
 
-                        <Button
-                            icon={<PlusOutlined />}
-                            onClick={() => onAddBook?.(category)}
-                            shape="circle"
-                            type="primary"
-                            style={{
-                                backgroundColor: '#8b8b8b',
-                                boxShadow: '-2.5px 2.5px 5px #00000020'
-                            }}
-                        />
+                        <AddButton tooltip={`Adicionar livro em "${category}"`} action={onAddBook} category={category} />
                     </Flex>
                 </>
             )

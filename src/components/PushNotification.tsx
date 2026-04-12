@@ -1,14 +1,15 @@
 import { BellOutlined } from '@ant-design/icons';
-import { Button, Dropdown, Input, Modal, message } from 'antd';
+import { Button, Dropdown, Input, Modal, Tooltip, message } from 'antd';
 import type { MenuProps } from 'antd';
 import { useMemo, useState } from 'react';
 import { usePushNotifications } from '../hooks/usePushNotifications';
 
 interface PushNotificationProps {
     isAdmin: boolean;
+    tooltip?: string;
 }
 
-export function PushNotification({ isAdmin }: PushNotificationProps) {
+export function PushNotification({ isAdmin, tooltip }: PushNotificationProps) {
     const {
         isSupported,
         permission,
@@ -107,19 +108,21 @@ export function PushNotification({ isAdmin }: PushNotificationProps) {
                 }}
                 trigger={['click']}
             >
-                <Button
-                    icon={<BellOutlined />}
-                    aria-label="Notificações"
-                    disabled={disabled}
-                    style={{
-                        background: 'none',
-                        border: 'none',
-                        padding: 0,
-                        color: '#001010',
-                        cursor: 'pointer',
-                        fontSize: '24px',
-                    }}
-                />
+                <Tooltip title={tooltip} placement="bottom">
+                    <Button
+                        icon={<BellOutlined />}
+                        aria-label="Notificações"
+                        loading={disabled}
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            padding: 0,
+                            color: '#001010',
+                            cursor: 'pointer',
+                            fontSize: '24px',
+                        }}
+                    />
+                </Tooltip>
             </Dropdown>
 
             <Modal
