@@ -17,8 +17,8 @@ import {
 import { CameraOutlined, CloseCircleOutlined, PaperClipOutlined, UploadOutlined } from '@ant-design/icons';
 import type { UploadFile } from 'antd';
 import type { RcFile } from 'antd/es/upload';
-import type { Dayjs } from 'dayjs';
 import type { ChangeEvent } from 'react';
+import dayjs from 'dayjs';
 
 import type { IBook, TStatus } from '../types/book.type';
 
@@ -28,6 +28,7 @@ interface AppCreateBookModalProps {
     onSubmit: (values: any) => void | Promise<void>;
     submitting?: boolean;
     initialStatus?: TStatus;
+    initialValues?: Partial<CreateBookFormValues>;
 }
 
 export interface CreateBookFormValues {
@@ -37,8 +38,8 @@ export interface CreateBookFormValues {
     autor?: IBook['autor'];
     ano?: IBook['ano'];
     text?: IBook['text'];
-    dtInicial?: Dayjs;
-    dtFinal?: Dayjs;
+    dtInicial?: dayjs.Dayjs;
+    dtFinal?: dayjs.Dayjs;
     numPagRead: IBook['numPagRead'];
     coverFileList?: UploadFile[];
 }
@@ -48,7 +49,8 @@ function AppCreateBookModal({
     onClose,
     onSubmit,
     submitting = false,
-    initialStatus
+    initialStatus,
+    initialValues
 }: AppCreateBookModalProps) {
 
     const [form] = Form.useForm<CreateBookFormValues>();
@@ -57,6 +59,7 @@ function AppCreateBookModal({
 
     const syncCoverFileList = (nextFileList: UploadFile[]) => {
         const normalizedFileList = nextFileList.slice(-1);
+
         setCoverFileList(normalizedFileList);
         form.setFieldsValue({ coverFileList: normalizedFileList });
     };
@@ -64,22 +67,35 @@ function AppCreateBookModal({
     useEffect(() => {
         if (!open) {
             form.resetFields();
-            setCoverFileList([]);
-            form.setFieldsValue({ coverFileList: [] });
+            syncCoverFileList([]);
             return;
         }
 
-        form.setFieldsValue({
-            numPagRead: 0,
-            status: initialStatus ?? 'Desejado',
-        });
-    }, [open, form, initialStatus]);
+        if (initialValues) {
+            form.setFieldsValue({
+                ...initialValues,
+                dtInicial: initialValues.dtInicial
+                    ? dayjs(initialValues.dtInicial)
+                    : undefined,
+                dtFinal: initialValues.dtFinal
+                    ? dayjs(initialValues.dtFinal)
+                    : undefined,
+            });
+
+            syncCoverFileList(initialValues.coverFileList ?? []);
+        } else {
+            form.setFieldsValue({
+                numPagRead: 0,
+                status: initialStatus ?? 'Desejado',
+            });
+
+            syncCoverFileList([]);
+        }
+    }, [open, form, initialValues, initialStatus]);
 
     const handleSubmit = (values: CreateBookFormValues) => {
         const formatted = {
             ...values,
-            dtInicial: values.dtInicial?.format("YYYY-MM-DD"),
-            dtFinal: values.dtFinal?.format("YYYY-MM-DD"),
             coverFileList,
         };
 
@@ -102,7 +118,18 @@ function AppCreateBookModal({
     };
 
     const handleUploadChange = ({ fileList }: { fileList: UploadFile[] }) => {
-        syncCoverFileList(fileList);
+        const withPreview = fileList.map((file) => {
+            if (!file.thumbUrl && file.originFileObj instanceof File) {
+                return {
+                    ...file,
+                    thumbUrl: URL.createObjectURL(file.originFileObj),
+                };
+            }
+
+            return file;
+        });
+
+        syncCoverFileList(withPreview);
     };
 
     const handleCapturePhotoClick = () => {
@@ -129,7 +156,7 @@ function AppCreateBookModal({
         <Modal
             open={open}
             onCancel={onClose}
-            title="Cadastrar novo livro"
+            title={initialValues ? "Editar livro" : "Cadastrar livro"}
             width={760}
             footer={null}
             destroyOnHidden
@@ -346,7 +373,7 @@ function AppCreateBookModal({
                 <Space style={{ width: '100%', justifyContent: 'flex-end' }}>
                     <Button onClick={onClose}>Cancelar</Button>
                     <Button type="primary" htmlType="submit" loading={submitting}>
-                        Cadastrar
+                        Salvar
                     </Button>
                 </Space>
             </Form>

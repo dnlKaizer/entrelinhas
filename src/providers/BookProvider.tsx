@@ -21,6 +21,8 @@ interface BookContextValue {
     error: string | null;
     loadBooks: (force?: boolean) => Promise<void>;
     addBookToCache: (book: IBook) => void;
+    updateBookInCache: (book: IBook) => void;
+    removeBookFromCache: (bookId: number) => void;
     clearBooksCache: () => void;
 }
 
@@ -104,6 +106,36 @@ export function BookProvider({ children }: { children: ReactNode }) {
         });
     }, []);
 
+    const updateBookInCache = useCallback((book: IBook) => {
+        setBooks((previousBooks) => {
+            const nextBooks = previousBooks.map((item) =>
+                item.idLivro === book.idLivro ? book : item,
+            );
+
+            cacheRef.current = {
+                userId: book.idUsuario,
+                books: nextBooks,
+                lastFetchAt: Date.now(),
+            };
+
+            return nextBooks;
+        });
+    }, []);
+
+    const removeBookFromCache = useCallback((bookId: number) => {
+        setBooks((previousBooks) => {
+            const nextBooks = previousBooks.filter((item) => item.idLivro !== bookId);
+
+            cacheRef.current = {
+                ...cacheRef.current,
+                books: nextBooks,
+                lastFetchAt: Date.now(),
+            };
+
+            return nextBooks;
+        });
+    }, []);
+
     useEffect(() => {
         const { data } = supabase.auth.onAuthStateChange((_event, session) => {
             const nextUserId = session?.user?.id ?? null;
@@ -124,8 +156,10 @@ export function BookProvider({ children }: { children: ReactNode }) {
         error,
         loadBooks,
         addBookToCache,
+        updateBookInCache,
+        removeBookFromCache,
         clearBooksCache,
-    }), [books, loading, error, loadBooks, addBookToCache, clearBooksCache]);
+    }), [books, loading, error, loadBooks, addBookToCache, updateBookInCache, removeBookFromCache, clearBooksCache]);
 
     return (
         <BookContext.Provider value={value}>
