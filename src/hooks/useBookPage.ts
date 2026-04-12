@@ -9,6 +9,22 @@ import { useBookById } from "../providers/BookProvider";
 import { useShareBook } from "./useShareBook";
 import { useSignedImageUrl } from "./useSignedImageUrl";
 
+function normalizeDateValue(value: unknown) {
+    if (!value) return undefined;
+    if (typeof value === "string") return value;
+
+    if (
+        typeof value === "object" &&
+        value !== null &&
+        "format" in value &&
+        typeof (value as { format: (fmt: string) => string }).format === "function"
+    ) {
+        return (value as { format: (fmt: string) => string }).format("YYYY-MM-DD");
+    }
+
+    return undefined;
+}
+
 export function useBookPage() {
     const { id } = useParams();
     const navigate = useNavigate();
@@ -53,8 +69,8 @@ export function useBookPage() {
 
             const payload = {
                 ...rest,
-                dtInicial: dtInicial?.format("YYYY-MM-DD"),
-                dtFinal: dtFinal?.format("YYYY-MM-DD"),
+                dtInicial: normalizeDateValue(dtInicial),
+                dtFinal: normalizeDateValue(dtFinal),
             };
 
             const updated = await bookService.update(book.idLivro, payload);

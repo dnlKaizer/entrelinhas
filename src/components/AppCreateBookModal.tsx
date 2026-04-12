@@ -92,8 +92,6 @@ function AppCreateBookModal({
     const handleSubmit = (values: CreateBookFormValues) => {
         const formatted = {
             ...values,
-            dtInicial: values.dtInicial?.format("YYYY-MM-DD"),
-            dtFinal: values.dtFinal?.format("YYYY-MM-DD"),
             coverFileList,
         };
 
