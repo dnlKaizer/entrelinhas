@@ -6,17 +6,28 @@ interface ShareOutcome {
     error?: unknown;
 }
 
+function getStatusPhrase(status: IBook["status"]) {
+    if (status === "Lendo") return "estou lendo";
+    if (status === "Desejado") return "quero ler";
+    return "acabei de ler";
+}
+
 function formatShareText(book: IBook) {
     const author = book.autor ?? "Autor desconhecido";
     const progress = book.numPag > 0
         ? Math.round((book.numPagRead / book.numPag) * 100)
         : 0;
+    const statusPhrase = getStatusPhrase(book.status);
+    const progressText = book.status === "Desejado"
+        ? "Ainda não comecei, mas já está na minha lista!"
+        : `Progresso: ${book.numPagRead}/${book.numPag} páginas (${progress}%)`;
 
     return [
-        `Livro: ${book.nome}`,
+        `Veja o livro ${book.nome} que ${statusPhrase}!`,
         `Autor: ${author}`,
-        `Status: ${book.status}`,
-        `Progresso: ${book.numPagRead}/${book.numPag} paginas (${progress}%)`,
+        progressText,
+        "",
+        "Compartilhado via Entrelinhas.",
     ].join("\n");
 }
 
@@ -45,6 +56,22 @@ async function createImageFileFromUrl(imageUrl?: string, bookName?: string) {
     return new File([blob], `${safeName || "livro"}-capa.jpg`, { type: mimeType });
 }
 
+function resolveSiteUrl(pageUrl?: string) {
+    if (pageUrl) {
+        try {
+            return new URL(pageUrl).origin;
+        } catch {
+            // Fallback below
+        }
+    }
+
+    if (typeof window !== "undefined") {
+        return window.location.origin;
+    }
+
+    return pageUrl ?? "";
+}
+
 export function useShareBook() {
     const isSupported = useMemo(() => {
         return typeof navigator !== "undefined" && typeof navigator.share === "function";
@@ -55,10 +82,12 @@ export function useShareBook() {
             return { status: "unsupported" };
         }
 
+        const siteUrl = resolveSiteUrl(pageUrl);
+
         const baseShareData: ShareData = {
             title: `Entrelinhas - ${book.nome}`,
             text: formatShareText(book),
-            url: pageUrl,
+            url: siteUrl,
         };
 
         try {
