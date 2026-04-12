@@ -30,9 +30,11 @@ export function useHomePage() {
             setIsCreatingBook(true);
 
             const { user } = await authService.getCurrentUser();
-            if (!user) throw new Error('Usuário nao autenticado');
+            if (!user) throw new Error('Usuário não autenticado');
 
-            const selectedCover = values.coverFileList?.[0]?.originFileObj;
+            const firstCoverItem = values.coverFileList?.[0];
+            const selectedCover = firstCoverItem?.originFileObj ?? (firstCoverItem as File | undefined);
+
             const uploadedCoverPath = selectedCover
                 ? await bookService.uploadCover(selectedCover, user.id)
                 : undefined;
@@ -52,8 +54,7 @@ export function useHomePage() {
             setIsCreateModalOpen(false);
             message.success('Livro cadastrado com sucesso!');
         } catch (createError) {
-            console.error('Erro ao cadastrar livro:', createError);
-            message.error('Nao foi possivel cadastrar o livro.');
+            message.error('Não foi possível cadastrar o livro.');
         } finally {
             setIsCreatingBook(false);
         }

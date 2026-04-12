@@ -18,7 +18,10 @@ class BookService {
                 upsert: false,
             });
 
-        if (error) throw error;
+        if (error) {
+            throw error;
+        }
+
 
         return filePath;
     }
