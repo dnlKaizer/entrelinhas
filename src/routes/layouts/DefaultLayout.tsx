@@ -12,7 +12,7 @@ function DefaultLayout({ isAdmin }: DefaultLayoutProps) {
     return (
         <Layout style={{ minHeight: '100vh' }}>
             <AppHeader isAdmin={isAdmin} />
-            <Content style={{ backgroundColor: '#fafafa', padding: 25, marginBottom: '70px' }}>
+            <Content style={{ backgroundColor: '#f0f5ff', padding: 25, marginBottom: '61px' }}>
                 <Outlet />
             </Content>
             <AppFooter />
