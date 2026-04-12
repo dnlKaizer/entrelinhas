@@ -11,9 +11,10 @@ import {
     Col,
     Upload,
     Space,
-    Tooltip
+    Tooltip,
+    Typography
 } from 'antd';
-import { CameraOutlined, UploadOutlined } from '@ant-design/icons';
+import { CameraOutlined, CloseCircleOutlined, PaperClipOutlined, UploadOutlined } from '@ant-design/icons';
 import type { UploadFile } from 'antd';
 import type { RcFile } from 'antd/es/upload';
 import type { Dayjs } from 'dayjs';
@@ -120,6 +121,9 @@ function AppCreateBookModal({
         // Permite selecionar a mesma imagem novamente em uma nova tentativa.
         event.target.value = '';
     };
+
+    const currentCover = coverFileList[0];
+    const currentCoverPreviewUrl = currentCover?.thumbUrl ?? currentCover?.url;
 
     return (
         <Modal
@@ -256,6 +260,7 @@ function AppCreateBookModal({
                                 listType="picture"
                                 fileList={coverFileList}
                                 onChange={handleUploadChange}
+                                showUploadList={false}
                             >
                                 <Tooltip title="Selecionar imagem">
                                     <Button
@@ -275,6 +280,51 @@ function AppCreateBookModal({
                                 />
                             </Tooltip>
                         </Space>
+
+                        {currentCover && (
+                            <div
+                                style={{
+                                    alignItems: 'center',
+                                    border: '1px solid #f0f0f0',
+                                    borderRadius: 8,
+                                    display: 'flex',
+                                    gap: 8,
+                                    marginTop: 10,
+                                    maxWidth: '100%',
+                                    padding: '6px 10px',
+                                }}
+                            >
+                                {currentCoverPreviewUrl ? (
+                                    <img
+                                        src={currentCoverPreviewUrl}
+                                        alt={currentCover.name}
+                                        style={{
+                                            borderRadius: 6,
+                                            height: 44,
+                                            objectFit: 'cover',
+                                            width: 32,
+                                        }}
+                                    />
+                                ) : (
+                                    <PaperClipOutlined style={{ color: '#595959' }} />
+                                )}
+                                <Typography.Text
+                                    style={{ flex: 1, minWidth: 0 }}
+                                    ellipsis={{ tooltip: currentCover.name }}
+                                >
+                                    {currentCover.name}
+                                </Typography.Text>
+                                <Tooltip title="Remover imagem">
+                                    <Button
+                                        aria-label="Remover imagem"
+                                        icon={<CloseCircleOutlined />}
+                                        size="small"
+                                        type="text"
+                                        onClick={() => syncCoverFileList([])}
+                                    />
+                                </Tooltip>
+                            </div>
+                        )}
 
                         <input
                             ref={cameraInputRef}
