@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { message } from "antd";
 
 import { bookService } from "../services/book.service";
+import { authService } from "../services/auth.service";
 import type { IBook } from "../types/book.type";
 import type { CreateBookFormValues } from "../components/AppCreateBookModal";
 import { useBookById } from "../providers/BookProvider";
@@ -66,11 +67,21 @@ export function useBookPage() {
             setIsUpdating(true);
 
             const { dtInicial, dtFinal, coverFileList, ...rest } = values;
+            const { user } = await authService.getCurrentUser();
+            if (!user) throw new Error("Usuário não autenticado");
+
+            const firstCoverItem = coverFileList?.[0];
+            const selectedCover = firstCoverItem?.originFileObj;
+
+            const uploadedCoverPath = selectedCover
+                ? await bookService.uploadCover(selectedCover, user.id)
+                : undefined;
 
             const payload = {
                 ...rest,
                 dtInicial: normalizeDateValue(dtInicial),
                 dtFinal: normalizeDateValue(dtFinal),
+                img: uploadedCoverPath ?? book.img,
             };
 
             const updated = await bookService.update(book.idLivro, payload);

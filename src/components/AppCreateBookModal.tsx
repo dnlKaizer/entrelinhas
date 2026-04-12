@@ -59,6 +59,7 @@ function AppCreateBookModal({
 
     const syncCoverFileList = (nextFileList: UploadFile[]) => {
         const normalizedFileList = nextFileList.slice(-1);
+
         setCoverFileList(normalizedFileList);
         form.setFieldsValue({ coverFileList: normalizedFileList });
     };
@@ -66,8 +67,7 @@ function AppCreateBookModal({
     useEffect(() => {
         if (!open) {
             form.resetFields();
-            setCoverFileList([]);
-            form.setFieldsValue({ coverFileList: [] });
+            syncCoverFileList([]);
             return;
         }
 
@@ -81,11 +81,15 @@ function AppCreateBookModal({
                     ? dayjs(initialValues.dtFinal)
                     : undefined,
             });
+
+            syncCoverFileList(initialValues.coverFileList ?? []);
         } else {
             form.setFieldsValue({
                 numPagRead: 0,
                 status: initialStatus ?? 'Desejado',
             });
+
+            syncCoverFileList([]);
         }
     }, [open, form, initialValues, initialStatus]);
 
@@ -114,7 +118,18 @@ function AppCreateBookModal({
     };
 
     const handleUploadChange = ({ fileList }: { fileList: UploadFile[] }) => {
-        syncCoverFileList(fileList);
+        const withPreview = fileList.map((file) => {
+            if (!file.thumbUrl && file.originFileObj instanceof File) {
+                return {
+                    ...file,
+                    thumbUrl: URL.createObjectURL(file.originFileObj),
+                };
+            }
+
+            return file;
+        });
+
+        syncCoverFileList(withPreview);
     };
 
     const handleCapturePhotoClick = () => {
