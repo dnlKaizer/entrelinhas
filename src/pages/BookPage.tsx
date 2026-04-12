@@ -9,7 +9,11 @@ import {
     Tag,
     Result,
     Flex,
-    Popconfirm
+    Popconfirm,
+    Row,
+    Col,
+    Grid,
+    Tooltip
 } from "antd";
 
 import {
@@ -34,7 +38,9 @@ const { Title, Text, Paragraph } = Typography;
 
 export function BookPage() {
     const navigate = useNavigate();
-    
+    const { useBreakpoint } = Grid;
+    const screens = useBreakpoint();
+
     const {
         book,
         count,
@@ -126,7 +132,9 @@ export function BookPage() {
 
                     {/* PROGRESSO */}
                     <div style={{ marginTop: 10 }}>
-                        <Progress percent={progress} />
+                        <Tooltip title={`${book.numPagRead} de ${book.numPag} páginas lidas`} placement="left">
+                            <Progress percent={progress} />
+                        </Tooltip>
                         {/* <Text type="secondary">
                             {book.numPagRead} / {book.numPag} páginas
                         </Text> */}
@@ -134,35 +142,44 @@ export function BookPage() {
 
                     {/* INFO */}
                     <div style={{ marginTop: 10 }}>
-                        <Space size="large">
-                            <InfoItem
-                                icon={<BookOutlined />}
-                                tooltip="Total de páginas do livro"
-                            >
-                                {book.numPag} páginas
-                            </InfoItem>
 
-                            {book.dtInicial && (
+                        <Row gutter={[8, 8]}>
+                            <Col xs={12} sm={6} md={6}>
                                 <InfoItem
-                                    icon={<CalendarOutlined />}
-                                    tooltip="Data de início da leitura"
+                                    icon={<BookOutlined />}
+                                    tooltip="Total de páginas do livro"
                                 >
-                                    {formatDate(book.dtInicial)}
+                                    {book.numPag} {screens.xs && "páginas"}
                                 </InfoItem>
-                            )}
+                            </Col>
 
-                            {book?.ano && (
-                                <InfoItem icon={<HistoryOutlined />} tooltip="Ano de publicação">
-                                    {book.ano}
-                                </InfoItem>
-                            )}
+                            <Col xs={12} sm={6} md={6}>
+                                {book?.ano && (
+                                    <InfoItem icon={<HistoryOutlined />} tooltip="Ano de publicação">
+                                        {book.ano}
+                                    </InfoItem>
+                                )}
+                            </Col>
 
-                            {book?.dtFinal && (
-                                <InfoItem icon={<TrophyOutlined />} tooltip="Data de término da leitura">
-                                    {formatDate(book.dtFinal)}
-                                </InfoItem>
-                            )}
-                        </Space>
+                            <Col xs={12} sm={6} md={6}>
+                                {book.dtInicial && (
+                                    <InfoItem
+                                        icon={<CalendarOutlined />}
+                                        tooltip="Data de início da leitura"
+                                    >
+                                        {formatDate(book.dtInicial)}
+                                    </InfoItem>
+                                )}
+                            </Col>
+
+                            <Col xs={12} sm={6} md={6}>
+                                {book?.dtFinal && (
+                                    <InfoItem icon={<TrophyOutlined />} tooltip="Data de término da leitura">
+                                        {formatDate(book.dtFinal)}
+                                    </InfoItem>
+                                )}
+                            </Col>
+                        </Row>
                     </div>
 
                     <Divider />

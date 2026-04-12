@@ -1,6 +1,6 @@
 import { Header } from "antd/es/layout/layout"
 import Title from "antd/es/typography/Title"
-import { Button, Space, message } from "antd"
+import { Button, Space, Tooltip, message } from "antd"
 import { useState } from "react"
 import { authService } from "../services/auth.service"
 import { LogoutOutlined } from "@ant-design/icons"
@@ -51,22 +51,24 @@ function AppHeader({ isAdmin }: AppHeaderProps) {
             </Title>
 
             <Space size="middle">
-                <PushNotification isAdmin={isAdmin} />
+                <PushNotification tooltip="Notificações" isAdmin={isAdmin} />
 
-                <Button
-                    onClick={handleLogout}
-                    loading={logoutLoading}
-                    icon={<LogoutOutlined />}
-                    aria-label="Sair"
-                    style={{
-                        background: 'none',
-                        border: 'none',
-                        padding: 0,
-                        color: '#001010',
-                        cursor: 'pointer',
-                        fontSize: '24px',
-                    }}
-                />
+                <Tooltip title={"Sair"} placement="bottom">
+                    <Button
+                        onClick={handleLogout}
+                        loading={logoutLoading}
+                        icon={<LogoutOutlined />}
+                        aria-label="Sair"
+                        style={{
+                            background: 'none',
+                            border: 'none',
+                            padding: 0,
+                            color: '#001010',
+                            cursor: 'pointer',
+                            fontSize: '24px',
+                        }}
+                    />
+                </Tooltip>
             </Space>
         </Header>
     )

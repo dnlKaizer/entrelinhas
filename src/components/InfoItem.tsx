@@ -1,4 +1,4 @@
-import { Space, Tooltip, Typography } from "antd";
+import { Tooltip, Typography } from "antd";
 
 const { Text } = Typography;
 
@@ -10,20 +10,36 @@ interface InfoItemProps {
 
 export function InfoItem({ icon, children, tooltip }: InfoItemProps) {
   const content = (
-    <Space size={3} align="center">
-      {icon}
+    <div
+      style={{
+        width: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        backgroundColor: "#fafafa",
+        padding: "5px 10px",
+        borderRadius: 5
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+        {icon}
+      </div>
+
       <Text
+        ellipsis
         style={{
-          fontSize: 12.5,
+          fontSize: 11.5,
+          textAlign: "right",
+          flex: 1,
         }}
       >
         {children}
       </Text>
-    </Space>
+    </div>
   );
 
   return tooltip ? (
-    <Tooltip title={tooltip}>
+    <Tooltip title={tooltip} placement="bottom">
       {content}
     </Tooltip>
   ) : (
