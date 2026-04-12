@@ -1,5 +1,5 @@
-import { Card, Typography, Button, Space, Divider, Progress, Tag, Result, Flex } from "antd";
-import { BookOutlined, CalendarOutlined } from "@ant-design/icons";
+import { Card, Typography, Button, Space, Divider, Progress, Tag, Result, Flex, message } from "antd";
+import { BookOutlined, CalendarOutlined, ShareAltOutlined } from "@ant-design/icons";
 import { useNavigate, useParams } from "react-router-dom";
 import { InfoItem } from "../components/InfoItem";
 import { BackButton } from "../components/BackButton";
@@ -7,6 +7,7 @@ import { formatDate } from "../utils/formatDate";
 import { useEffect, useState } from "react";
 import { useBookById } from "../providers/BookProvider";
 import { useSignedImageUrl } from "../hooks/useSignedImageUrl";
+import { useShareBook } from "../hooks/useShareBook";
 import AppBackground from "../components/AppBackground";
 
 const { Title, Text, Paragraph } = Typography;
@@ -16,6 +17,8 @@ export function BookPage() {
     const navigate = useNavigate();
     const book = useBookById(Number(id));
     const [count, setCount] = useState(5);
+    const [shareLoading, setShareLoading] = useState(false);
+    const { isSupported, shareBook } = useShareBook();
 
     useEffect(() => {
         if (!book) {
@@ -53,6 +56,28 @@ export function BookPage() {
     const progress = Math.round(
         (book.numPagRead / book.numPag) * 100
     );
+
+    const handleShare = async () => {
+        if (!isSupported) {
+            message.warning("Seu dispositivo não suporta compartilhamento nativo.");
+            return;
+        }
+
+        setShareLoading(true);
+
+        const result = await shareBook(book, window.location.href, imageUrl);
+
+        if (result.status === "shared") {
+            message.success("Livro compartilhado com sucesso.");
+        } else if (result.status === "unsupported") {
+            message.warning("Seu dispositivo não suporta compartilhamento nativo.");
+        } else if (result.status === "error") {
+            message.error("Não foi possível compartilhar este livro.");
+            console.error("Erro ao compartilhar livro:", result.error);
+        }
+
+        setShareLoading(false);
+    };
 
     return (
         <AppBackground>
@@ -159,18 +184,30 @@ export function BookPage() {
                         {book.text || "Sem descrição disponível."}
                     </Paragraph>
 
-                    {/* BOTÃO */}
-                    <Button
-                        type="primary"
-                        block
-                        style={{ borderRadius: 10 }}
-                    >
-                        {book.status === "Lendo"
-                            ? "Continuar leitura"
-                            : book.status === "Lido"
-                                ? "Ler novamente"
-                                : "Iniciar leitura"}
-                    </Button>
+                    <Space direction="vertical" style={{ width: "100%" }}>
+                        {/* BOTÃO */}
+                        <Button
+                            type="primary"
+                            block
+                            style={{ borderRadius: 10 }}
+                        >
+                            {book.status === "Lendo"
+                                ? "Continuar leitura"
+                                : book.status === "Lido"
+                                    ? "Ler novamente"
+                                    : "Iniciar leitura"}
+                        </Button>
+
+                        <Button
+                            icon={<ShareAltOutlined />}
+                            block
+                            onClick={handleShare}
+                            loading={shareLoading}
+                            style={{ borderRadius: 10 }}
+                        >
+                            Compartilhar livro
+                        </Button>
+                    </Space>
                 </Card>
             </Flex>
         </AppBackground>
