@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
     Button,
     DatePicker,
@@ -10,10 +10,15 @@ import {
     Row,
     Col,
     Upload,
-    Space
+    Space,
+    Tooltip,
+    Typography
 } from 'antd';
+import { CameraOutlined, CloseCircleOutlined, PaperClipOutlined, UploadOutlined } from '@ant-design/icons';
 import type { UploadFile } from 'antd';
+import type { RcFile } from 'antd/es/upload';
 import type { Dayjs } from 'dayjs';
+import type { ChangeEvent } from 'react';
 
 import type { IBook, TStatus } from '../types/book.type';
 
@@ -47,10 +52,19 @@ function AppCreateBookModal({
 }: AppCreateBookModalProps) {
 
     const [form] = Form.useForm<CreateBookFormValues>();
+    const cameraInputRef = useRef<HTMLInputElement | null>(null);
+    const [coverFileList, setCoverFileList] = useState<UploadFile[]>([]);
+
+    const syncCoverFileList = (nextFileList: UploadFile[]) => {
+        const normalizedFileList = nextFileList.slice(-1);
+        setCoverFileList(normalizedFileList);
+        form.setFieldsValue({ coverFileList: normalizedFileList });
+    };
 
     useEffect(() => {
         if (!open) {
             form.resetFields();
+            setCoverFileList([]);
             form.setFieldsValue({ coverFileList: [] });
             return;
         }
@@ -66,10 +80,50 @@ function AppCreateBookModal({
             ...values,
             dtInicial: values.dtInicial?.format("YYYY-MM-DD"),
             dtFinal: values.dtFinal?.format("YYYY-MM-DD"),
+            coverFileList,
         };
 
         onSubmit(formatted);
     };
+
+    const mapFileToUploadList = (file: File): UploadFile[] => {
+        const rcFile = Object.assign(file, { uid: `camera-${Date.now()}` }) as RcFile;
+
+        const uploadFile: UploadFile & { source?: 'camera' } = {
+            uid: rcFile.uid,
+            name: rcFile.name || `foto-capa-${Date.now()}.jpg`,
+            status: 'done',
+            originFileObj: rcFile,
+            thumbUrl: URL.createObjectURL(file),
+            source: 'camera',
+        };
+
+        return [uploadFile];
+    };
+
+    const handleUploadChange = ({ fileList }: { fileList: UploadFile[] }) => {
+        syncCoverFileList(fileList);
+    };
+
+    const handleCapturePhotoClick = () => {
+        cameraInputRef.current?.click();
+    };
+
+    const handleCameraFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+        const selectedFile = event.target.files?.[0];
+        if (!selectedFile) {
+            return;
+        }
+
+
+        syncCoverFileList(mapFileToUploadList(selectedFile));
+
+        // Permite selecionar a mesma imagem novamente em uma nova tentativa.
+        event.target.value = '';
+    };
+
+    const currentCover = coverFileList[0];
+    const currentCoverPreviewUrl = currentCover?.thumbUrl ?? currentCover?.url;
 
     return (
         <Modal
@@ -196,20 +250,91 @@ function AppCreateBookModal({
                 {/* IMAGEM */}
                 <Form.Item
                     label="Imagem da capa"
-                    name="coverFileList"
-                    valuePropName="fileList"
-                    getValueFromEvent={(e) =>
-                        Array.isArray(e) ? e : e?.fileList
-                    }
                 >
-                    <Upload
-                        beforeUpload={() => false}
-                        accept="image/*"
-                        maxCount={1}
-                        listType="picture"
-                    >
-                        <Button>Selecionar imagem</Button>
-                    </Upload>
+                    <div>
+                        <Space>
+                            <Upload
+                                beforeUpload={() => false}
+                                accept="image/*"
+                                maxCount={1}
+                                listType="picture"
+                                fileList={coverFileList}
+                                onChange={handleUploadChange}
+                                showUploadList={false}
+                            >
+                                <Tooltip title="Selecionar imagem">
+                                    <Button
+                                        shape="circle"
+                                        icon={<UploadOutlined />}
+                                        aria-label="Selecionar imagem"
+                                    />
+                                </Tooltip>
+                            </Upload>
+
+                            <Tooltip title="Tirar foto">
+                                <Button
+                                    shape="circle"
+                                    icon={<CameraOutlined />}
+                                    onClick={handleCapturePhotoClick}
+                                    aria-label="Tirar foto"
+                                />
+                            </Tooltip>
+                        </Space>
+
+                        {currentCover && (
+                            <div
+                                style={{
+                                    alignItems: 'center',
+                                    border: '1px solid #f0f0f0',
+                                    borderRadius: 8,
+                                    display: 'flex',
+                                    gap: 8,
+                                    marginTop: 10,
+                                    maxWidth: '100%',
+                                    padding: '6px 10px',
+                                }}
+                            >
+                                {currentCoverPreviewUrl ? (
+                                    <img
+                                        src={currentCoverPreviewUrl}
+                                        alt={currentCover.name}
+                                        style={{
+                                            borderRadius: 6,
+                                            height: 44,
+                                            objectFit: 'cover',
+                                            width: 32,
+                                        }}
+                                    />
+                                ) : (
+                                    <PaperClipOutlined style={{ color: '#595959' }} />
+                                )}
+                                <Typography.Text
+                                    style={{ flex: 1, minWidth: 0 }}
+                                    ellipsis={{ tooltip: currentCover.name }}
+                                >
+                                    {currentCover.name}
+                                </Typography.Text>
+                                <Tooltip title="Remover imagem">
+                                    <Button
+                                        aria-label="Remover imagem"
+                                        icon={<CloseCircleOutlined />}
+                                        size="small"
+                                        type="text"
+                                        onClick={() => syncCoverFileList([])}
+                                    />
+                                </Tooltip>
+                            </div>
+                        )}
+
+                        <input
+                            ref={cameraInputRef}
+                            type="file"
+                            accept="image/*"
+                            capture="environment"
+                            onChange={handleCameraFileChange}
+                            style={{ display: 'none' }}
+                        />
+                    </div>
                 </Form.Item>
 
                 {/* DESCRIÇÃO */}
