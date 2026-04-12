@@ -1,56 +1,14 @@
 import { BellOutlined } from '@ant-design/icons';
 import { Button, Dropdown, Input, Modal, message } from 'antd';
 import type { MenuProps } from 'antd';
-import { useEffect, useMemo, useState } from 'react';
-import { authService } from '../services/auth.service';
-import { supabase } from '../services/supabase.client';
+import { useMemo, useState } from 'react';
 import { usePushNotifications } from '../hooks/usePushNotifications';
 
-const ADMIN_ROLE_CACHE_KEY_PREFIX = 'push-notification-admin-role:';
-const ADMIN_ROLE_CACHE_TTL_MS = 10 * 60 * 1000;
-
-interface IAdminRoleCacheEntry {
+interface PushNotificationProps {
     isAdmin: boolean;
-    cachedAt: number;
 }
 
-function getAdminRoleCacheKey(userId: string): string {
-    return `${ADMIN_ROLE_CACHE_KEY_PREFIX}${userId}`;
-}
-
-function readCachedAdminRole(userId: string): boolean | null {
-    try {
-        const raw = sessionStorage.getItem(getAdminRoleCacheKey(userId));
-        if (!raw) return null;
-
-        const parsed = JSON.parse(raw) as IAdminRoleCacheEntry;
-        const isExpired = Date.now() - parsed.cachedAt > ADMIN_ROLE_CACHE_TTL_MS;
-
-        if (isExpired || typeof parsed.isAdmin !== 'boolean') {
-            sessionStorage.removeItem(getAdminRoleCacheKey(userId));
-            return null;
-        }
-
-        return parsed.isAdmin;
-    } catch {
-        return null;
-    }
-}
-
-function writeCachedAdminRole(userId: string, isAdmin: boolean): void {
-    try {
-        const cacheEntry: IAdminRoleCacheEntry = {
-            isAdmin,
-            cachedAt: Date.now(),
-        };
-
-        sessionStorage.setItem(getAdminRoleCacheKey(userId), JSON.stringify(cacheEntry));
-    } catch {
-        // Ignore cache write failures (private mode, quota, etc.).
-    }
-}
-
-export function PushNotification() {
+export function PushNotification({ isAdmin }: PushNotificationProps) {
     const {
         isSupported,
         permission,
@@ -61,55 +19,9 @@ export function PushNotification() {
         sendNotificationToAll,
         unsubscribe,
     } = usePushNotifications();
-    const [isAdmin, setIsAdmin] = useState(false);
     const [isCustomModalOpen, setIsCustomModalOpen] = useState(false);
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-
-    useEffect(() => {
-        let mounted = true;
-
-        async function loadRole() {
-            try {
-                const { user } = await authService.getCurrentUser();
-
-                if (!user) {
-                    if (mounted) setIsAdmin(false);
-                    return;
-                }
-
-                const cachedIsAdmin = readCachedAdminRole(user.id);
-                if (cachedIsAdmin !== null) {
-                    if (mounted) setIsAdmin(cachedIsAdmin);
-                    return;
-                }
-
-                const { data, error: profileError } = await supabase
-                    .from('profile')
-                    .select('is_admin')
-                    .eq('id', user.id)
-                    .maybeSingle();
-
-                if (profileError) throw profileError;
-
-                const isAdminFromApi = !!data?.is_admin;
-                writeCachedAdminRole(user.id, isAdminFromApi);
-
-                if (mounted) setIsAdmin(isAdminFromApi);
-            } catch (err) {
-                console.error('Erro ao carregar perfil para notificações:', err);
-                if (mounted) {
-                    message.error('Não foi possível verificar permissões de notificação.');
-                }
-            }
-        }
-
-        loadRole();
-
-        return () => {
-            mounted = false;
-        };
-    }, []);
 
     async function handleMenuClick(action: string): Promise<void> {
         if (action === 'subscribe') {
