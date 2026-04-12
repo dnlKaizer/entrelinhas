@@ -6,7 +6,7 @@ import { bookService } from "../services/book.service";
 import { authService } from "../services/auth.service";
 import type { IBook } from "../types/book.type";
 import type { CreateBookFormValues } from "../components/AppCreateBookModal";
-import { useBookById } from "../providers/BookProvider";
+import { useBookById, useBooks } from "../providers/BookProvider";
 import { useShareBook } from "./useShareBook";
 import { useSignedImageUrl } from "./useSignedImageUrl";
 
@@ -29,6 +29,7 @@ function normalizeDateValue(value: unknown) {
 export function useBookPage() {
     const { id } = useParams();
     const navigate = useNavigate();
+    const { updateBookInCache, removeBookFromCache } = useBooks();
 
     const [shareLoading, setShareLoading] = useState(false);
     const { isSupported, shareBook } = useShareBook();
@@ -86,7 +87,8 @@ export function useBookPage() {
 
             const updated = await bookService.update(book.idLivro, payload);
 
-            setBook(updated); // 👈 atualiza local
+            setBook(updated);
+            updateBookInCache(updated);
             message.success("Livro atualizado!");
             closeEditModal();
 
@@ -105,6 +107,8 @@ export function useBookPage() {
             setIsDeleting(true);
 
             await bookService.delete(book.idLivro);
+
+            removeBookFromCache(book.idLivro);
 
             message.success("Livro excluído!");
             navigate("/");
